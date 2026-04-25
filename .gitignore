@@ -20,6 +20,12 @@ node_modules
 # turbo
 .turbo/
 
+# pnpm
+.pnpm-store/
+
+# supabase
+supabase/.temp/
+
 # production
 /build
 
