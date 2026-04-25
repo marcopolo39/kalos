@@ -66,13 +66,22 @@ supabase link --project-ref <your-project-ref>
 supabase db push
 ```
 
-## Generate TypeScript types
+## TypeScript types
 
-After schema changes:
+Generated types live in `packages/db/src/types.ts` and are exported as `@kalos/db`.
+Both apps import `Database` from this package — no duplication.
+
+After applying schema changes, regenerate:
 
 ```bash
-supabase gen types typescript --project-id <your-project-ref> --schema public > types/supabase.ts
+supabase gen types typescript --project-id <your-project-ref> > packages/db/src/types.ts
 ```
+
+## Storage
+
+A private Supabase Storage bucket named `scans` is created by the migration.
+Object path convention: `scans/<member_id>/<scan_id>.pdf`.
+RLS policies on `storage.objects` mirror those on the `scans` table (owner-only access).
 
 ## Deploy
 
