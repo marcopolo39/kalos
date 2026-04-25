@@ -21,6 +21,8 @@ export interface GoalMetricEntry {
   direction: GoalDirection;
   baseline_value: number;
   baseline_scan_id: string;
+  /** Optional. When present, dashboard renders progress as (baseline − current) / (baseline − target), clamped 0–100%. When absent, renders direction-only. */
+  target_value?: number;
 }
 
 // ---------------------------------------------------------------------------
