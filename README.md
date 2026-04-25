@@ -29,7 +29,7 @@ Two route groups share one repo and one auth context:
 
 ```bash
 # 1. Clone
-git clone https://github.com/<your-handle>/kalos && cd kalos
+git clone https://github.com/marcopolo39/kalos && cd kalos
 
 # 2. Install dependencies
 pnpm install
@@ -76,6 +76,8 @@ supabase gen types typescript --project-id <your-project-ref> --schema public > 
 
 ## Deploy
 
+Production URL: **https://kalos-iota.vercel.app**
+
 The project is deployed on Vercel. Each push to `main` triggers a new production deployment. Preview deployments are created automatically for PRs.
 
 To deploy manually:
@@ -84,4 +86,4 @@ To deploy manually:
 vercel --prod
 ```
 
-Make sure `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` are set in your Vercel project environment variables.
+Make sure `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` are set in your Vercel project environment variables (Settings → Environment Variables).
