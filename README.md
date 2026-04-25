@@ -50,6 +50,29 @@ Open [http://localhost:3000](http://localhost:3000) — you will be redirected t
 |----------|-------------|
 | `NEXT_PUBLIC_SUPABASE_URL` | Your Supabase project URL |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Your Supabase anon public key |
+| `SUPABASE_SERVICE_ROLE_KEY` | Service-role key — required for `pnpm seed` only (Supabase → Settings → API) |
+
+## Seed demo data
+
+Populate the database with 6 demo members covering all dashboard personas:
+
+```bash
+# Add SUPABASE_SERVICE_ROLE_KEY to .env.local first, then:
+pnpm seed
+```
+
+The script is idempotent — running it again deletes and recreates the seed rows.
+
+### Demo credentials
+
+| Member | Email | Password | Scans | Story |
+|--------|-------|----------|-------|-------|
+| Sarah | `sarah@demo.kalos.dev` | `password123` | 1 | First-scan UI |
+| Jordan | `jordan@demo.kalos.dev` | `password123` | 2 | Mild fat loss + lean gain |
+| Alex | `alex@demo.kalos.dev` | `password123` | 5 | Steady cut, lean preserved |
+| Taylor | `taylor@demo.kalos.dev` | `password123` | 4 | Lean mass regression (last scan) |
+| Morgan | `morgan@demo.kalos.dev` | `password123` | 6 | Weight-stable recomp |
+| Casey | `casey@demo.kalos.dev` | `password123` | 3 | Plateau pattern |
 
 ## Database migrations
 
