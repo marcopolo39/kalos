@@ -1,0 +1,41 @@
+---
+description: Supabase database conventions — schema, RLS, migrations, auth
+alwaysApply: false
+---
+
+# Database — 3 tables
+
+`members` — PK is `auth.users.id`. Trigger `handle_new_user()` auto-creates row on signup (SECURITY DEFINER). Requires `name`, `dob`, `sex` in `raw_user_meta_data`.
+
+`scans` — wide flat, ~28 columns. UNIQUE on `(member_id, scan_date, external_scan_id)`. Index on `(member_id, scan_date DESC)`.
+
+`member_goals` — JSONB `metrics` array: `{ metric, direction, baseline_value, baseline_scan_id, target_value? }`
+
+- Valid metrics: `tbf_pct | almi | vat_area_cm2 | weight_lb`
+- Valid directions: `decrease | increase | maintain`
+- `target_value` is optional — enables progress % when present, direction-only when absent
+- Validated with Zod in app layer, not Postgres
+
+## Row-Level Security
+
+RLS enabled on every table + `scans` storage bucket. Owner-only model.
+
+- `scans`, `member_goals`: `using (member_id = auth.uid()) with check (member_id = auth.uid())`
+- `members`: `using (id = auth.uid()) with check (id = auth.uid())`
+- Storage: `bucket_id = 'scans' and (storage.foldername(name))[1] = auth.uid()::text`
+- Path convention: `scans/<member_id>/<scan_id>.pdf`
+
+No coach/admin role at DB layer. Cross-member reads use service_role key server-side only.
+
+## Migrations
+
+- Raw SQL in `supabase/migrations/` with timestamped names
+- Apply: `supabase db push`
+- After any change: `supabase gen types typescript --local > packages/supabase/database.types.ts`
+- Seed scripts must run with service_role key (RLS blocks anon inserts)
+
+## Auth
+
+- Dashboard: Supabase Auth, email/password, anon key in browser
+- MemberGPT: service_role key, server-side only, bypasses RLS entirely
+- Signup form must enforce name/dob/sex presence before calling `auth.signUp`
