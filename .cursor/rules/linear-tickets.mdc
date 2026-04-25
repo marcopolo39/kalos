@@ -1,0 +1,44 @@
+---
+description: How to handle vague or ambiguous requirements in Linear tickets
+alwaysApply: true
+---
+
+# Linear Ticket Ambiguity Protocol
+
+When implementing a Linear ticket, read the full description and acceptance criteria before writing any code. If any requirement is vague, under-specified, or has meaningful trade-offs, **stop and ask before implementing**. Never assume.
+
+## When to ask
+
+Ask whenever you encounter:
+- A decision that affects security, data access, or schema design
+- Two or more plausible implementations with meaningfully different trade-offs
+- Missing constraints (e.g. expiry time, file size limit, allowed formats, error behavior)
+- Acceptance criteria that are impossible to meet without a product decision (e.g. "users can download" — via what mechanism?)
+
+## How to ask
+
+For each ambiguous point, structure your question as:
+
+1. **The gap** — what specific detail is missing or unclear
+2. **Options** — the realistic choices (usually 2–4)
+3. **Reason for each** — one sentence per option explaining the trade-off, not just what it does
+4. **Your recommendation** — state which you'd pick and why
+
+Ask **one question at a time**. Wait for the answer before asking the next. Never batch multiple questions into a single message.
+
+## Example format
+
+> **Gap:** The ticket says "users can download their scan" but doesn't specify the mechanism.
+>
+> **Options:**
+> - **Signed URL (5 min expiry)** — server generates a short-lived link on demand. Secure, can't be shared long-term. Best for a dashboard "download" button.
+> - **Signed URL (24 hr expiry)** — same but survives longer sessions or could be emailed. Slightly more exposure risk.
+> - **Descope downloads** — only show extracted data in the dashboard, no raw file access. Simplest; removes the feature entirely.
+>
+> **Recommendation:** Signed URL at 5 min — tight security, fits the dashboard flow.
+
+## Never
+
+- Implement a vague requirement by making an assumption — always ask first
+- Ask about things that are already clear in the ticket or inferable from project conventions
+- Ask multiple questions at once
