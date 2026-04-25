@@ -59,3 +59,4 @@ Derived from the live Kalos brand at livekalos.com. Match this exactly in both a
 - Store BMI, ethnicity, or scan_type (product decisions)
 - Use barrel exports except for tool registries
 - Write arbitrary SQL in MemberGPT — use typed queries or safe SQL primitives
+- **Commit or push code without explicit user instruction** — always stop and present changes for review; never run `git commit`, `git push`, `gh pr create`, or any equivalent without being explicitly asked
