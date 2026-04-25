@@ -110,12 +110,9 @@ create policy "scans: delete own"
 -- ---------------------------------------------------------------------------
 -- 3. member_goals (JSONB metrics array)
 -- ---------------------------------------------------------------------------
--- metrics shape: [{ metric, direction, baseline_value, baseline_scan_id, target_value? }, ...]
+-- metrics shape: [{ metric, direction, baseline_value, baseline_scan_id }, ...]
 -- Valid metric values:  tbf_pct | almi | vat_area_cm2 | weight_lb
 -- Valid direction values: decrease | increase | maintain
--- target_value is optional. When present, dashboard renders progress as
---   (baseline_value − current) / (baseline_value − target_value), clamped 0–100%.
---   When absent, renders direction-only ("body fat trending down 1.2pp from baseline").
 -- Shape validated in the application layer (Zod); not enforced by Postgres.
 -- No FK on baseline_scan_id — typo'd ID surfaces immediately as a render error.
 create table public.member_goals (
