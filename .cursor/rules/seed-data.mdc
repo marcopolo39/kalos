@@ -1,0 +1,34 @@
+---
+description: Seed data for 6 demo members covering all 3 dashboard personas
+alwaysApply: false
+---
+
+# Seed Data — 6 Members
+
+Must run with service_role key (RLS blocks anon inserts). Creates auth.users entries via Supabase Admin API, which triggers `handle_new_user()` to auto-create members rows.
+
+## Personas
+
+- **Sarah** — 1 scan (recent). Tests first-scan UI. Female, early 30s.
+- **Jordan** — 2 scans, 1 month apart. Mild fat loss + lean gain. Male, mid 25s.
+- **Alex** — 5 scans over 4 months. Steady cut + lean preservation. Male, late 20s.
+- **Taylor** — 3 scans. Regressing (gaining fat, losing lean). Female, mid 30s. Tests the "bad news" UI path.
+- **Morgan** — 6 scans over 6 months. Recomp story (fat down, lean up, weight stable). Female, late 20s.
+- **Casey** — 4 scans. Bulking phase (lean up, fat stable, weight up). Male, early 20s.
+
+## Realistic ranges (adults, mixed demographics)
+
+- tbf_pct: 15–35% (males lower, females higher)
+- almi: 6.5–10.0 kg/m² (males higher)
+- vat_area_cm2: 40–120 cm²
+- weight_lb: 120–210 lb
+- Regional lean/fat should sum to approximately total body mass minus bone
+
+## Demo credentials
+
+Each member gets an email/password login. Document credentials in README.
+Format: `<name>@demo.kalos.dev` / `password123`
+
+## Goals
+
+At least Sarah, Jordan, and Alex should have goals set. Include a mix of target_value present and absent to test both progress UI paths.

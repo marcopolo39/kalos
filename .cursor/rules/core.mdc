@@ -1,0 +1,62 @@
+---
+description: Kalos project conventions — stack, structure, and global rules
+globs:
+alwaysApply: true
+---
+
+# Kalos Take-Home
+
+Turborepo monorepo with two Next.js 16 (App Router) + TypeScript strict apps sharing one Supabase project.
+
+- `apps/web` — member dashboard (Supabase Auth, anon key, email/password)
+- `apps/membergpt` — MemberGPT coach chat (service_role key, no end-user auth)
+- `supabase/migrations/` — timestamped raw SQL
+- `packages/` — shared code (types, utils)
+
+Stack: pnpm, Tailwind, shadcn/ui, Recharts, Vercel AI SDK, Zod.
+
+## Key conventions
+
+- No ORM — typed Supabase client only
+- UUIDs as PKs everywhere
+- Named exports (except Next.js page/layout)
+- `interface` over `type` for object shapes
+- `as const` objects or Zod enums, never TS `enum`
+- `async/await`, never `.then()` chains
+- Server Components by default; `"use client"` only when needed
+- Validate all external input with Zod
+- Components under 200 lines; extract hooks and sub-components
+- Always regenerate types after migration changes: `supabase gen types typescript --local > packages/supabase/database.types.ts`
+
+## Design System
+
+Derived from the live Kalos brand at livekalos.com. Match this exactly in both apps.
+
+**Palette:**
+- Background: `bg-white` (`#FFFFFF`) — all page and card backgrounds
+- Primary black: `bg-black` / `text-black` (`#0A0A0A`) — nav, headers, dark surfaces
+- Brand blue: `bg-blue-700` / `text-blue-700` (`#1D4ED8`) — primary CTAs, active states, chart accent
+- Body text: `text-neutral-900` on white; `text-white` on black/blue
+- Muted/secondary text: `text-neutral-500`
+- Borders: `border-neutral-200` on white surfaces; `border-white/10` on dark surfaces
+
+**Tokens in practice:**
+- Primary button: `bg-blue-700 hover:bg-blue-800 text-white`
+- Nav/header bar: `bg-black text-white`
+- Page shell: `bg-white`
+- Cards: `bg-white border border-neutral-200 rounded-lg`
+- Selected/active card: `ring-2 ring-blue-700`
+- Chart primary line: `stroke-blue-700` / `#1D4ED8`
+- Improvement delta (↑ lean, ↓ fat): `text-green-600`
+- Regression delta: `text-red-600`
+- Stable delta: `text-neutral-500`
+
+**Never** use dark-mode classes, dark backgrounds on cards, or gray/colored backgrounds on page shells.
+
+## Never
+
+- Expose service_role key in client bundles
+- Store BMI, ethnicity, or scan_type (product decisions)
+- Use barrel exports except for tool registries
+- Write arbitrary SQL in MemberGPT — use typed queries or safe SQL primitives
+- **Commit or push code without explicit user instruction** — always stop and present changes for review; never run `git commit`, `git push`, `gh pr create`, or any equivalent without being explicitly asked
