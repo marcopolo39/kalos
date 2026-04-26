@@ -42,11 +42,29 @@ type GoalMetric = {
 // Helpers
 // ---------------------------------------------------------------------------
 
+/**
+ * Rounds a number to a fixed number of decimal places.
+ *
+ * @param n   - The number to round.
+ * @param dec - Decimal places to keep (default: 2).
+ * @returns   The rounded number.
+ */
 function r(n: number, dec = 2) {
   return Math.round(n * 10 ** dec) / 10 ** dec;
 }
 
-/** Derive regional lean/fat breakdown from high-level DEXA metrics. */
+/**
+ * Derives per-region lean and fat mass values from scan-level DEXA metrics.
+ * Uses fixed anatomical proportions (arms ≈ 37 %, legs ≈ 63 % of appendicular lean)
+ * to split total lean/fat into the 5 regions the schema stores.
+ *
+ * @param weightLb   - Total body weight in pounds.
+ * @param tbfPct     - Total body fat percentage (e.g. 22.4).
+ * @param heightIn   - Standing height in inches, used to compute height² for ALMI → kg conversion.
+ * @param almiTarget - Appendicular lean mass index (kg/m²) for this scan.
+ * @param boneMassKg - Bone mineral content in kg (default: 2.75); subtracted before lean is distributed.
+ * @returns An object with 10 region-specific mass fields (kg, rounded to 2 dp) ready to spread into a ScanRow.
+ */
 function bodyComp(
   weightLb: number,
   tbfPct: number,
@@ -88,6 +106,31 @@ function bodyComp(
   };
 }
 
+/**
+ * Builds a complete ScanRow object ready to insert into the `scans` table.
+ * Generates a fresh UUID for `id`, constructs a deterministic `external_scan_id`
+ * from the member slug and scan index, and calls `bodyComp` to populate all
+ * per-region mass fields.
+ *
+ * @param memberId      - UUID of the owning member (auth user id).
+ * @param scanIdx       - Zero-based position of this scan in the member's scan list; used to form the external_scan_id.
+ * @param nameSlug      - Short lowercase name used in the external_scan_id (e.g. "sarah").
+ * @param scanDate      - ISO date string for the scan (YYYY-MM-DD).
+ * @param weightLb      - Total body weight in pounds.
+ * @param tbfPct        - Total body fat percentage.
+ * @param vatAreaCm2    - Visceral adipose tissue area in cm².
+ * @param almi          - Appendicular lean mass index (kg/m²).
+ * @param heightIn      - Standing height in inches.
+ * @param bmd           - Total bone mineral density (g/cm²).
+ * @param tScore        - T-score relative to young-normal reference population.
+ * @param zScore        - Z-score relative to age-matched reference population.
+ * @param tbfPctileYn   - TBF% percentile vs. young-normal norms.
+ * @param tbfPctileAm   - TBF% percentile vs. age-matched norms.
+ * @param almiPctileYn  - ALMI percentile vs. young-normal norms.
+ * @param almiPctileAm  - ALMI percentile vs. age-matched norms.
+ * @param boneMassKg    - Bone mineral content in kg (default: 2.75).
+ * @returns A fully-populated ScanRow object (without `created_at`, which the DB defaults).
+ */
 function makeScan(
   memberId: string,
   scanIdx: number,
@@ -549,6 +592,15 @@ const MEMBERS = [
 // Clean-up (idempotent)
 // ---------------------------------------------------------------------------
 
+/**
+ * Deletes all existing seed data from the database so the script is idempotent.
+ * Finds seed users by matching against the demo email addresses in MEMBERS,
+ * then deletes their rows in FK-safe order: member_goals → scans → members → auth users.
+ * If no seed users exist yet, the function returns early without making any deletions.
+ *
+ * @returns A promise that resolves when cleanup is complete.
+ * @throws  The Supabase error object if any database or auth operation fails.
+ */
 async function cleanUp() {
   console.log("🧹  Cleaning up existing seed data…");
 
@@ -599,6 +651,16 @@ async function cleanUp() {
 // Seed
 // ---------------------------------------------------------------------------
 
+/**
+ * Orchestrates the full seed run for all demo members.
+ * Calls `cleanUp` first to ensure idempotency, then for each member in MEMBERS:
+ *   1. Creates an auth user via the admin API (a DB trigger auto-creates the `members` row).
+ *   2. Inserts all of the member's scans by building ScanRows with `makeScan`.
+ *   3. Inserts a `member_goals` row if the member definition includes a `goals` factory.
+ *
+ * @returns A promise that resolves when all members, scans, and goals have been inserted.
+ * @throws  The Supabase error object if any auth or database operation fails.
+ */
 async function seed() {
   await cleanUp();
 
