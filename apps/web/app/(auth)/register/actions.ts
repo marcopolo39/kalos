@@ -1,16 +1,17 @@
 "use server";
 
-import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const DOB_RE = /^\d{4}-\d{2}-\d{2}$/;
 const VALID_SEX = ["Male", "Female"] as const;
 
+type RegisterState = { error: string } | { success: true } | undefined;
+
 export async function registerAction(
-  _prevState: { error: string } | undefined,
+  _prevState: RegisterState,
   formData: FormData,
-): Promise<{ error: string } | undefined> {
+): Promise<RegisterState> {
   const name = (formData.get("name") as string | null)?.trim() ?? "";
   const email = (formData.get("email") as string | null)?.trim() ?? "";
   const password = (formData.get("password") as string | null) ?? "";
@@ -46,5 +47,5 @@ export async function registerAction(
     return { error: error.message };
   }
 
-  redirect("/dashboard");
+  return { success: true };
 }
