@@ -665,12 +665,13 @@ async function seed() {
 // Entry point
 // ---------------------------------------------------------------------------
 
-seed()
-  .then(() => {
+(async () => {
+  try {
+    await seed();
     console.log("\n✅  Seed complete.");
     process.exit(0);
-  })
-  .catch((err: unknown) => {
+  } catch (err: unknown) {
     console.error("\n❌  Seed failed:", err);
     process.exit(1);
-  });
+  }
+})();
