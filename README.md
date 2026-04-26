@@ -70,9 +70,9 @@ The script is idempotent — running it again deletes and recreates the seed row
 | Sarah | `sarah@demo.kalos.dev` | `password123` | 1 | First-scan UI |
 | Jordan | `jordan@demo.kalos.dev` | `password123` | 2 | Mild fat loss + lean gain |
 | Alex | `alex@demo.kalos.dev` | `password123` | 5 | Steady cut, lean preserved |
-| Taylor | `taylor@demo.kalos.dev` | `password123` | 4 | Lean mass regression (last scan) |
+| Taylor | `taylor@demo.kalos.dev` | `password123` | 3 | Lean mass regression (last scan) |
 | Morgan | `morgan@demo.kalos.dev` | `password123` | 6 | Weight-stable recomp |
-| Casey | `casey@demo.kalos.dev` | `password123` | 3 | Plateau pattern |
+| Casey | `casey@demo.kalos.dev` | `password123` | 4 | Bulking phase (lean up, fat stable, weight up) |
 
 ## Database migrations
 

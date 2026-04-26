@@ -311,7 +311,7 @@ const MEMBERS = [
   },
 
   // ── Taylor ────────────────────────────────────────────────────────────────
-  // Persona: 4 scans, lean mass regression between last 2.  Female, mid 30s.
+  // Persona: 3 scans, lean mass regression in last scan.  Female, mid 30s.
   // Must surface in find_population_metric_change.
   {
     email: "taylor@demo.kalos.dev",
@@ -324,17 +324,6 @@ const MEMBERS = [
     tScore: -0.5,
     zScore: 0.1,
     scans: [
-      {
-        scan_date: "2025-12-05",
-        weight_lb: 155,
-        tbf_pct: 31.5,
-        vat_area_cm2: 82,
-        almi: 6.4,
-        tbf_pct_pctile_yn: 55,
-        tbf_pct_pctile_am: 52,
-        almi_pctile_yn: 30,
-        almi_pctile_am: 35,
-      },
       {
         scan_date: "2026-01-05",
         weight_lb: 156,
@@ -374,13 +363,13 @@ const MEMBERS = [
         {
           metric: "tbf_pct" as const,
           direction: "decrease" as const,
-          baseline_value: 31.5,
+          baseline_value: 31.2,
           baseline_scan_id: firstScanId,
         },
         {
           metric: "almi" as const,
           direction: "increase" as const,
-          baseline_value: 6.4,
+          baseline_value: 6.5,
           baseline_scan_id: firstScanId,
         },
       ] satisfies GoalMetric[],
@@ -479,7 +468,7 @@ const MEMBERS = [
   },
 
   // ── Casey ─────────────────────────────────────────────────────────────────
-  // Persona: 3 scans, plateau (minimal change).  Male, early 20s.
+  // Persona: 4 scans, bulking phase (lean up, fat stable, weight up).  Male, early 20s.
   {
     email: "casey@demo.kalos.dev",
     password: "password123",
@@ -504,25 +493,36 @@ const MEMBERS = [
       },
       {
         scan_date: "2026-02-22",
-        weight_lb: 168,
-        tbf_pct: 18.3,
-        vat_area_cm2: 64,
-        almi: 8.3,
-        tbf_pct_pctile_yn: 49,
-        tbf_pct_pctile_am: 47,
-        almi_pctile_yn: 48,
-        almi_pctile_am: 50,
+        weight_lb: 171,
+        tbf_pct: 18.6, // fat stable while gaining mass
+        vat_area_cm2: 66,
+        almi: 8.6,
+        tbf_pct_pctile_yn: 51,
+        tbf_pct_pctile_am: 49,
+        almi_pctile_yn: 52,
+        almi_pctile_am: 54,
       },
       {
         scan_date: "2026-03-22",
-        weight_lb: 169,
-        tbf_pct: 18.4,
-        vat_area_cm2: 65,
-        almi: 8.4,
-        tbf_pct_pctile_yn: 50,
-        tbf_pct_pctile_am: 48,
-        almi_pctile_yn: 50,
-        almi_pctile_am: 51,
+        weight_lb: 174,
+        tbf_pct: 18.7,
+        vat_area_cm2: 67,
+        almi: 8.9,
+        tbf_pct_pctile_yn: 51,
+        tbf_pct_pctile_am: 50,
+        almi_pctile_yn: 56,
+        almi_pctile_am: 58,
+      },
+      {
+        scan_date: "2026-04-22",
+        weight_lb: 177,
+        tbf_pct: 18.8,
+        vat_area_cm2: 68,
+        almi: 9.2,
+        tbf_pct_pctile_yn: 52,
+        tbf_pct_pctile_am: 50,
+        almi_pctile_yn: 60,
+        almi_pctile_am: 62,
       },
     ],
     goals: (firstScanId: string) =>
@@ -532,6 +532,14 @@ const MEMBERS = [
           direction: "increase" as const,
           baseline_value: 168,
           baseline_scan_id: firstScanId,
+          target_value: 180,
+        },
+        {
+          metric: "almi" as const,
+          direction: "increase" as const,
+          baseline_value: 8.3,
+          baseline_scan_id: firstScanId,
+          target_value: 9.5,
         },
       ] satisfies GoalMetric[],
   },
