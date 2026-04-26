@@ -1,1 +1,49 @@
 @AGENTS.md
+
+# MemberGPT (`apps/membergpt`)
+
+Coach-facing chat. No end-user auth. Uses service_role Supabase client (bypasses RLS).
+
+## Stack
+
+- Vercel AI SDK (`ai` + `@ai-sdk/react`)
+- Claude Sonnet 4.6 as the model
+- `streamText` on a Next.js Route Handler (`app/api/chat/route.ts`)
+- `useChat()` on the client
+
+## Tool calling (not RAG, not context-stuffing)
+
+5 typed tools cover all spec example questions:
+
+- `get_member_by_name(name)` → array of matches (disambiguates "Sarah")
+- `get_scan_history(member_id, limit?)` → scans in chronological order
+- `get_member_goals(member_id)` → structured goal objects
+- `list_members(filter?)` → filtered by sex, scan count, etc. Hard-cap 50 results
+- `find_population_metric_change(metric, direction, comparison, min_change?)` → cross-population queries
+
+MetricKey enum (14 values): 4 scan-level + 10 per-region lean/fat. Use tight enums — model errors like "BMI" surface at the type boundary, not as wrong SQL.
+
+## Grounding contract (system prompt rules)
+
+- Numbers come from tools, period. No values from training data.
+- No speculation beyond the data ("might be eating too much sodium" = no)
+- Acknowledge gaps: "I don't have hydration data" beats a confident guess
+- Population queries → tables; single-member → prose with numeric anchors
+- Flag single-scan changes within measurement variance (BMD CV ≈ 1%)
+
+## Streaming UX
+
+- Per-tool status pills: "Searching for Jordan's scan history…"
+- Pills → terse confirmations: "✓ 6 scans"
+- Tool calls + results expandable as `<details>` under each message
+
+## File structure
+
+```
+app/api/chat/route.ts          — streamText, tool registry, system prompt
+app/page.tsx                   — useChat() + tool-call rendering
+lib/membergpt/tools/           — one file per tool + index.ts registry
+lib/membergpt/metrics.ts       — MetricKey enum + column/label helpers
+lib/membergpt/system-prompt.ts — grounding contract
+lib/supabase/                  — server client, service role
+```
