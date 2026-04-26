@@ -47,10 +47,10 @@ Auth-gated with Supabase email/password. Uses the anon key — RLS enforces owne
 - Page background: `bg-white`
 - Nav/header: `bg-black text-white`
 - Cards: `bg-white border border-neutral-200 rounded-lg shadow-sm`
-- Primary button: `bg-blue-700 hover:bg-blue-800 text-white` (brand blue)
-- Active/selected states: `ring-2 ring-blue-700`
+- Primary button: `bg-blue-500 hover:bg-blue-600 text-white rounded-xl` (brand blue)
+- Active/selected states: `ring-2 ring-blue-500`
 - Body text: `text-neutral-900`; muted: `text-neutral-500`
-- Chart primary series: `#1D4ED8` (blue-700)
+- Chart primary series: `#3B82F6` (blue-500)
 - Improvement delta: `text-green-600`; regression: `text-red-600`; stable: `text-neutral-500`
 - Section headers: `text-black font-semibold tracking-tight`
 

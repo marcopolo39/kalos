@@ -1,1 +1,6 @@
 @import "tailwindcss";
+
+@theme {
+  --color-kalos-blue: #3083ff;
+  --color-kalos-blue-dark: #1a6fe8;
+}
