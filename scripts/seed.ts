@@ -6,6 +6,7 @@
  */
 
 import { createClient } from "@supabase/supabase-js";
+import type { Database, TablesInsert } from "../packages/supabase/database.types";
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -17,7 +18,7 @@ if (!SUPABASE_URL || !SERVICE_ROLE_KEY) {
   process.exit(1);
 }
 
-const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
+const supabase = createClient<Database>(SUPABASE_URL, SERVICE_ROLE_KEY, {
   auth: { autoRefreshToken: false, persistSession: false },
 });
 
@@ -25,45 +26,16 @@ const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
 // Types
 // ---------------------------------------------------------------------------
 
+// Derived from the generated schema — stays in sync with migrations automatically.
+type ScanRow = TablesInsert<"scans">;
+
+// JSONB columns are typed as `Json` in the generated file; keep the shape local.
 type GoalMetric = {
   metric: "tbf_pct" | "almi" | "vat_area_cm2" | "weight_lb";
   direction: "decrease" | "increase" | "maintain";
   baseline_value: number;
   baseline_scan_id: string;
   target_value?: number;
-};
-
-type ScanRow = {
-  id: string;
-  member_id: string;
-  scan_date: string;
-  external_scan_id: string;
-  device_model: string;
-  device_serial: string;
-  software_version: string;
-  weight_lb: number;
-  height_in: number;
-  tbf_pct: number;
-  tbf_pct_pctile_yn: number;
-  tbf_pct_pctile_am: number;
-  vat_area_cm2: number;
-  almi: number;
-  almi_pctile_yn: number;
-  almi_pctile_am: number;
-  total_bmd: number;
-  total_t_score: number;
-  total_z_score: number;
-  l_arm_lean_mass: number;
-  r_arm_lean_mass: number;
-  l_arm_fat_mass: number;
-  r_arm_fat_mass: number;
-  trunk_lean_mass: number;
-  trunk_fat_mass: number;
-  l_leg_lean_mass: number;
-  r_leg_lean_mass: number;
-  l_leg_fat_mass: number;
-  r_leg_fat_mass: number;
-  source_pdf_path: null;
 };
 
 // ---------------------------------------------------------------------------
@@ -134,7 +106,7 @@ function makeScan(
   almiPctileYn: number,
   almiPctileAm: number,
   boneMassKg = 2.75,
-): ScanRow {
+) {
   return {
     id: crypto.randomUUID(),
     member_id: memberId,
@@ -191,7 +163,16 @@ const MEMBERS = [
         almi_pctile_am: 42,
       },
     ],
-    goals: null, // no goals per issue spec
+    goals: (firstScanId: string) =>
+      [
+        {
+          metric: "tbf_pct" as const,
+          direction: "decrease" as const,
+          baseline_value: 29.2,
+          baseline_scan_id: firstScanId,
+          target_value: 24.0,
+        },
+      ] satisfies GoalMetric[],
   },
 
   // ── Jordan ────────────────────────────────────────────────────────────────
@@ -659,7 +640,7 @@ async function seed() {
 
     // 3. Insert goals (members 2–6 per issue spec; goals fn present = insert)
     if (member.goals) {
-      const firstScanId = scanRows[0].id;
+      const firstScanId = scanRows[0].id!;
       const metrics = member.goals(firstScanId);
 
       const { error: goalsErr } = await supabase.from("member_goals").insert({
