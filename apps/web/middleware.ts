@@ -2,6 +2,22 @@ import { type NextRequest, NextResponse } from "next/server";
 
 import { updateSession } from "./lib/supabase/middleware";
 
+/**
+ * `NextResponse.redirect` must not drop Set-Cookie from `updateSession` (e.g.
+ * rotated Supabase refresh tokens). Copy all cookies from the session response
+ * before returning the redirect.
+ */
+function redirectWithSessionCookies(
+  targetUrl: URL,
+  sessionResponse: NextResponse,
+): NextResponse {
+  const redirectResponse = NextResponse.redirect(targetUrl);
+  sessionResponse.cookies
+    .getAll()
+    .forEach((cookie) => redirectResponse.cookies.set(cookie));
+  return redirectResponse;
+}
+
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
@@ -14,13 +30,13 @@ export async function middleware(request: NextRequest) {
   if (isDashboard && !user) {
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.pathname = "/login";
-    return NextResponse.redirect(redirectUrl);
+    return redirectWithSessionCookies(redirectUrl, response);
   }
 
   if (isAuthPage && user) {
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.pathname = "/dashboard";
-    return NextResponse.redirect(redirectUrl);
+    return redirectWithSessionCookies(redirectUrl, response);
   }
 
   return response;
