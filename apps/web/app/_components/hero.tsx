@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { ButtonLink } from "./button";
 
 export function Hero() {
   return (
@@ -16,20 +16,12 @@ export function Hero() {
         over time — fat, muscle, and bone, all in one place.
       </p>
       <div className="flex items-center gap-4">
-        <Link
-          href="/register"
-          className="bg-[#3083ff] hover:bg-[#1a6fe8] text-white rounded font-semibold px-8 py-5 text-base leading-none tracking-tight transition-colors"
-          style={{ fontFamily: "var(--font-manrope)" }}
-        >
+        <ButtonLink href="/register" className="px-8 py-5 text-base">
           Get started
-        </Link>
-        <Link
-          href="/login"
-          className="bg-white text-[#3083ff] border border-[#3083ff] hover:bg-blue-50 rounded font-semibold px-8 py-5 text-base leading-none tracking-tight transition-colors"
-          style={{ fontFamily: "var(--font-manrope)" }}
-        >
+        </ButtonLink>
+        <ButtonLink href="/login" variant="secondary" className="px-8 py-5 text-base">
           Log in
-        </Link>
+        </ButtonLink>
       </div>
     </section>
   );

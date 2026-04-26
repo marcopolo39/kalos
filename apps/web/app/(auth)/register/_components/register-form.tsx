@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Button } from "@/app/_components/button";
 
 interface RegisterFormProps {
   action: (payload: FormData) => void;
@@ -105,14 +106,13 @@ export function RegisterForm({ action, pending, error }: RegisterFormProps) {
             </select>
           </div>
 
-          <button
+          <Button
             type="submit"
             disabled={pending}
-            className="w-full bg-[#3083ff] hover:bg-[#1a6fe8] text-white text-sm font-semibold rounded px-5 py-[15px] leading-none tracking-tight transition-colors disabled:opacity-60 disabled:cursor-not-allowed mt-2"
-            style={{ fontFamily: "var(--font-manrope)" }}
+            className="w-full text-sm px-5 py-[15px] disabled:opacity-60 disabled:cursor-not-allowed mt-2"
           >
             {pending ? "Creating account…" : "Create account"}
-          </button>
+          </Button>
         </form>
 
         <p className="text-sm text-neutral-500 text-center mt-6">

@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 import Link from "next/link";
 import { loginAction } from "./actions";
+import { Button } from "@/app/_components/button";
 
 export default function LoginPage() {
   const [state, action, pending] = useActionState(loginAction, undefined);
@@ -56,14 +57,13 @@ export default function LoginPage() {
             />
           </div>
 
-          <button
+          <Button
             type="submit"
             disabled={pending}
-            className="w-full bg-[#3083ff] hover:bg-[#1a6fe8] text-white text-sm font-semibold rounded px-5 py-[15px] leading-none tracking-tight transition-colors disabled:opacity-60 disabled:cursor-not-allowed mt-2"
-            style={{ fontFamily: "var(--font-manrope)" }}
+            className="w-full text-sm px-5 py-[15px] disabled:opacity-60 disabled:cursor-not-allowed mt-2"
           >
             {pending ? "Logging in…" : "Log in"}
-          </button>
+          </Button>
         </form>
 
         <p className="text-sm text-neutral-500 text-center mt-6">

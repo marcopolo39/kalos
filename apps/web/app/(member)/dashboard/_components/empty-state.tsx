@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { ButtonLink } from "@/app/_components/button";
 
 export function EmptyState({ memberName }: { memberName: string }) {
   return (
@@ -11,13 +11,9 @@ export function EmptyState({ memberName }: { memberName: string }) {
         <br />
         Upload your first DEXA scan to see your breakdown.
       </p>
-      <Link
-        href="/upload"
-        className="bg-[#3083ff] hover:bg-[#1a6fe8] text-white rounded font-semibold px-5 py-[15px] text-sm leading-none tracking-tight transition-colors"
-        style={{ fontFamily: "var(--font-manrope)" }}
-      >
+      <ButtonLink href="/upload" className="px-5 py-[15px] text-sm">
         Upload your first scan
-      </Link>
+      </ButtonLink>
       <p className="text-xs text-neutral-400">
         Your scan data is private and encrypted.
       </p>

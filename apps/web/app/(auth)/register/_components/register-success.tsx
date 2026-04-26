@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { ButtonLink } from "@/app/_components/button";
 
 export function RegisterSuccess() {
   return (
@@ -21,13 +21,9 @@ export function RegisterSuccess() {
             Your account is ready. Log in to get started.
           </p>
         </div>
-        <Link
-          href="/login"
-          className="w-full bg-[#3083ff] hover:bg-[#1a6fe8] text-white text-sm font-semibold rounded px-5 py-[15px] leading-none tracking-tight transition-colors text-center"
-          style={{ fontFamily: "var(--font-manrope)" }}
-        >
+        <ButtonLink href="/login" className="w-full text-sm px-5 py-[15px] text-center">
           Go to login →
-        </Link>
+        </ButtonLink>
       </div>
     </div>
   );
