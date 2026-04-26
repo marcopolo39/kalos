@@ -4,16 +4,18 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { EmptyState } from "./_components/empty-state";
 
 async function getDashboardData(supabase: SupabaseClient, userId: string) {
-  const [{ count }, { data: member }] = await Promise.all([
+  const [{ data: firstScan }, { data: member }] = await Promise.all([
     supabase
       .from("scans")
-      .select("*", { count: "exact", head: true })
-      .eq("member_id", userId),
+      .select("id")
+      .eq("member_id", userId)
+      .limit(1)
+      .maybeSingle(),
     supabase.from("members").select("name").eq("id", userId).single(),
   ]);
 
   return {
-    scanCount: count ?? 0,
+    hasScans: Boolean(firstScan),
     memberName: member?.name ?? "there",
   };
 }
@@ -21,17 +23,19 @@ async function getDashboardData(supabase: SupabaseClient, userId: string) {
 export default async function DashboardPage() {
   const supabase = await createClient();
 
+  // Middleware already validates/refreshes auth with getUser on /dashboard.
+  // Read session locally here to avoid a second network call per request.
   const {
-    data: { user },
-  } = await supabase.auth.getUser();
+    data: { session },
+  } = await supabase.auth.getSession();
 
-  if (!user) {
+  if (!session?.user) {
     redirect("/login");
   }
 
-  const { scanCount, memberName } = await getDashboardData(supabase, user.id);
+  const { hasScans, memberName } = await getDashboardData(supabase, session.user.id);
 
-  if (scanCount === 0) {
+  if (!hasScans) {
     return <EmptyState memberName={memberName} />;
   }
 
