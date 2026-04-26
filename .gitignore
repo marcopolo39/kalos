@@ -45,6 +45,9 @@ yarn-error.log*
 .env.local
 .env.*.local
 
+# MCP server config (contains secrets)
+.mcp.json
+
 # vercel
 .vercel
 
