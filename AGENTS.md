@@ -30,7 +30,7 @@ Stack: pnpm, Tailwind, Recharts, Vercel AI SDK, Zod.
 - Server Components by default; `"use client"` only when needed
 - Validate all external input with Zod
 - Components under 200 lines; extract hooks and sub-components
-- Always regenerate types after migration changes: `supabase gen types typescript --local > packages/supabase/database.types.ts`
+- Always regenerate types after any migration changes (see `supabase/CLAUDE.md` for the exact command)
 
 ## Design System
 
@@ -39,18 +39,18 @@ Derived from the live Kalos brand at livekalos.com. Match this exactly in both a
 **Palette:**
 - Background: `bg-white` (`#FFFFFF`) — all page and card backgrounds
 - Primary black: `bg-black` / `text-black` (`#0A0A0A`) — nav, headers, dark surfaces
-- Brand blue: `bg-blue-700` / `text-blue-700` (`#1D4ED8`) — primary CTAs, active states, chart accent
+- Brand blue: `bg-blue-500` / `text-blue-500` (`#3B82F6`) — primary CTAs, active states, chart accent
 - Body text: `text-neutral-900` on white; `text-white` on black/blue
 - Muted/secondary text: `text-neutral-500`
 - Borders: `border-neutral-200` on white surfaces; `border-white/10` on dark surfaces
 
 **Tokens in practice:**
-- Primary button: `bg-blue-700 hover:bg-blue-800 text-white`
+- Primary button: `bg-blue-500 hover:bg-blue-600 text-white`
 - Nav/header bar: `bg-black text-white`
 - Page shell: `bg-white`
 - Cards: `bg-white border border-neutral-200 rounded-lg`
-- Selected/active card: `ring-2 ring-blue-700`
-- Chart primary line: `stroke-blue-700` / `#1D4ED8`
+- Selected/active card: `ring-2 ring-blue-500`
+- Chart primary line: `stroke-blue-500` / `#3B82F6`
 - Improvement delta (↑ lean, ↓ fat): `text-green-600`
 - Regression delta: `text-red-600`
 - Stable delta: `text-neutral-500`

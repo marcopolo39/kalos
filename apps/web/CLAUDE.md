@@ -24,7 +24,7 @@ Auth-gated with Supabase email/password. Uses the anon key — RLS enforces owne
 
 ## Scan upload
 
-- Accept PDF upload → store in Supabase Storage (`scans/<member_id>/<scan_id>.pdf`)
+- Accept PDF upload → store in Supabase Storage
 - Parse via server action calling Gemini 3 Flash structured output
 - Save extracted data to `scans` table
 - New scan immediately appears on dashboard (revalidate or optimistic update)
@@ -34,20 +34,6 @@ Auth-gated with Supabase email/password. Uses the anon key — RLS enforces owne
 - Error boundary per persona view
 - Loading skeletons, not spinners
 - Recharts for all charts — responsive containers
-
-## Design system
-
-- Page background: `bg-white`
-- Nav/header: `bg-black text-white`
-- Cards: `bg-white border border-neutral-200 rounded-lg shadow-sm`
-- Primary button: `bg-blue-500 hover:bg-blue-600 text-white rounded-xl`
-- Active/selected states: `ring-2 ring-blue-500`
-- Body text: `text-neutral-900`; muted: `text-neutral-500`
-- Chart primary series: `#3B82F6` (blue-500)
-- Improvement delta: `text-green-600`; regression: `text-red-600`; stable: `text-neutral-500`
-- Section headers: `text-black font-semibold tracking-tight`
-
-Do not use dark-mode card backgrounds, gray page backgrounds, or colored surface fills.
 
 # PDF Scan Extraction
 
