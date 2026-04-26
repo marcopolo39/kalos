@@ -19,7 +19,8 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "@kalos/supabase": ["../../packages/supabase/database.types.ts"]
     }
   },
   "include": [
