@@ -1,7 +1,10 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import type { User } from "@supabase/supabase-js";
 
-export async function updateSession(request: NextRequest) {
+export async function updateSession(
+  request: NextRequest,
+): Promise<{ response: NextResponse; user: User | null }> {
   let supabaseResponse = NextResponse.next({ request });
 
   const supabase = createServerClient(
@@ -25,9 +28,12 @@ export async function updateSession(request: NextRequest) {
     },
   );
 
-  // Refresh the session – must not contain any logic between createServerClient
-  // and getUser that reads/mutates request/response headers/cookies.
-  await supabase.auth.getUser();
+  // Refresh the session and capture the user in one call — must not contain
+  // any logic between createServerClient and getUser that reads/mutates
+  // request/response headers/cookies.
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  return supabaseResponse;
+  return { response: supabaseResponse, user };
 }

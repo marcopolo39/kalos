@@ -4,6 +4,8 @@
   "packageManager": "pnpm@10.33.2",
   "scripts": {
     "dev": "turbo run dev",
+    "dev:web": "turbo run dev --filter=@kalos/web",
+    "dev:membergpt": "turbo run dev --filter=@kalos/membergpt",
     "build": "turbo run build",
     "lint": "turbo run lint",
     "seed": "tsx --env-file=.env.local scripts/seed.ts"
