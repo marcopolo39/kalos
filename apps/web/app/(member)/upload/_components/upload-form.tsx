@@ -9,11 +9,17 @@ interface FieldError {
   message: string;
 }
 
-type Status = "idle" | "uploading" | "error";
+const UploadStatus = {
+  idle: "idle",
+  uploading: "uploading",
+  error: "error",
+} as const;
+
+type UploadStatus = (typeof UploadStatus)[keyof typeof UploadStatus];
 
 export function UploadForm() {
   const [file, setFile] = useState<File | null>(null);
-  const [status, setStatus] = useState<Status>("idle");
+  const [status, setStatus] = useState<UploadStatus>(UploadStatus.idle);
   const [fieldErrors, setFieldErrors] = useState<FieldError[] | null>(null);
   const [duplicateMessage, setDuplicateMessage] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -29,7 +35,7 @@ export function UploadForm() {
   async function handleUpload() {
     if (!file) return;
 
-    setStatus("uploading");
+    setStatus(UploadStatus.uploading);
     setFieldErrors(null);
     setDuplicateMessage(null);
 
@@ -63,7 +69,7 @@ export function UploadForm() {
       ]);
     }
 
-    setStatus("error");
+    setStatus(UploadStatus.error);
   }
 
   return (
@@ -118,11 +124,11 @@ export function UploadForm() {
       )}
 
       <Button
-        disabled={!file || status === "uploading"}
+        disabled={!file || status === UploadStatus.uploading}
         className="w-full px-5 py-[15px] text-sm"
         onClick={handleUpload}
       >
-        {status === "uploading" ? "Parsing scan..." : "Upload scan"}
+        {status === UploadStatus.uploading ? "Parsing scan..." : "Upload scan"}
       </Button>
     </div>
   );
