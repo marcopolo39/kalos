@@ -50,7 +50,7 @@ export async function extractScanFromPdf(
     const base64 = Buffer.from(pdfBytes).toString('base64');
 
     const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
+      model: 'gemini-3.0-flash',
       contents: [
         {
           role: 'user',
