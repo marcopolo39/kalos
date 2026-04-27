@@ -1,32 +1,16 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
 import { ScanExtractionSchema } from '@/lib/scan-extraction/schema';
 import { uploadScanPdf } from '@/lib/scan-extraction/storage';
+import { validatePdfFile, getAuthenticatedUser } from '@/lib/scan-extraction/validators';
 
 export async function POST(request: Request) {
   try {
     const formData = await request.formData();
-    const file = formData.get('file');
     const dataField = formData.get('data');
 
-    if (!file || !(file instanceof Blob)) {
-      return NextResponse.json(
-        { ok: false, errors: [{ field: 'file', message: 'No file provided' }] },
-        { status: 400 },
-      );
-    }
-    if (file.type !== 'application/pdf' && !('name' in file && (file as File).name.endsWith('.pdf'))) {
-      return NextResponse.json(
-        { ok: false, errors: [{ field: 'file', message: 'File must be a PDF' }] },
-        { status: 400 },
-      );
-    }
-    if (file.size > 50 * 1024 * 1024) {
-      return NextResponse.json(
-        { ok: false, errors: [{ field: 'file', message: 'File exceeds 50 MB limit' }] },
-        { status: 400 },
-      );
-    }
+    const fileResult = validatePdfFile(formData.get('file'));
+    if (!fileResult.ok) return fileResult.response;
+
     if (!dataField || typeof dataField !== 'string') {
       return NextResponse.json(
         { ok: false, errors: [{ field: 'data', message: 'No data provided' }] },
@@ -34,16 +18,9 @@ export async function POST(request: Request) {
       );
     }
 
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) {
-      return NextResponse.json(
-        { ok: false, errors: [{ field: 'auth', message: 'Not authenticated' }] },
-        { status: 401 },
-      );
-    }
+    const authResult = await getAuthenticatedUser();
+    if (!authResult.ok) return authResult.response;
+    const { user, supabase } = authResult;
 
     let parsed: unknown;
     try {
@@ -125,7 +102,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const pdfBytes = new Uint8Array(await file.arrayBuffer());
+    const pdfBytes = new Uint8Array(await fileResult.blob.arrayBuffer());
     const uploadResult = await uploadScanPdf(user.id, scanId, pdfBytes);
     if (!uploadResult.ok) {
       console.error('Storage upload error (scan row saved):', uploadResult.error);
