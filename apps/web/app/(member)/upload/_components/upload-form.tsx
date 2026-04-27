@@ -3,47 +3,85 @@
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/app/_components/button";
+import { PdfViewer } from "./pdf-viewer";
+import { ScanForm } from "./scan-form";
+import type { ScanExtraction } from "@/lib/scan-extraction/schema";
 
 interface FieldError {
   field: string;
   message: string;
 }
 
-const UploadStatus = {
-  idle: "idle",
-  uploading: "uploading",
-  error: "error",
+const Stage = {
+  pick: "pick",
+  extracting: "extracting",
+  review: "review",
+  saving: "saving",
 } as const;
 
-type UploadStatus = (typeof UploadStatus)[keyof typeof UploadStatus];
+type Stage = (typeof Stage)[keyof typeof Stage];
 
 export function UploadForm() {
   const [file, setFile] = useState<File | null>(null);
-  const [status, setStatus] = useState<UploadStatus>(UploadStatus.idle);
-  const [fieldErrors, setFieldErrors] = useState<FieldError[] | null>(null);
-  const [duplicateMessage, setDuplicateMessage] = useState<string | null>(null);
+  const [stage, setStage] = useState<Stage>(Stage.pick);
+  const [extractedData, setExtractedData] = useState<ScanExtraction | null>(null);
+  const [extractErrors, setExtractErrors] = useState<FieldError[] | null>(null);
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [isDuplicate, setIsDuplicate] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const selected = e.target.files?.[0] ?? null;
     setFile(selected);
-    setFieldErrors(null);
-    setDuplicateMessage(null);
+    setExtractErrors(null);
   }
 
-  async function handleUpload() {
+  async function handleExtract() {
     if (!file) return;
 
-    setStatus(UploadStatus.uploading);
-    setFieldErrors(null);
-    setDuplicateMessage(null);
+    setStage(Stage.extracting);
+    setExtractErrors(null);
 
     const formData = new FormData();
     formData.append("file", file);
 
     try {
-      const res = await fetch("/api/scans/upload", {
+      const res = await fetch("/api/scans/extract", {
+        method: "POST",
+        body: formData,
+      });
+      const json = await res.json();
+
+      if (!json.ok) {
+        setExtractErrors(
+          json.errors ?? [{ field: "server", message: "Something went wrong." }],
+        );
+        setStage(Stage.pick);
+        return;
+      }
+
+      setExtractedData(json.data);
+      setStage(Stage.review);
+    } catch {
+      setExtractErrors([{ field: "network", message: "Network error. Please try again." }]);
+      setStage(Stage.pick);
+    }
+  }
+
+  async function handleSave(data: ScanExtraction) {
+    if (!file) return;
+
+    setStage(Stage.saving);
+    setSaveError(null);
+    setIsDuplicate(false);
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("data", JSON.stringify(data));
+
+    try {
+      const res = await fetch("/api/scans/save", {
         method: "POST",
         body: formData,
       });
@@ -55,21 +93,36 @@ export function UploadForm() {
       }
 
       if (json.duplicate) {
-        setDuplicateMessage(json.message);
-      } else if (json.errors) {
-        setFieldErrors(json.errors);
+        setIsDuplicate(true);
       } else {
-        setFieldErrors([
-          { field: "server", message: "Something went wrong. Please try again." },
-        ]);
+        setSaveError(
+          json.errors?.[0]?.message ?? "Something went wrong. Please try again.",
+        );
       }
+      setStage(Stage.review);
     } catch {
-      setFieldErrors([
-        { field: "network", message: "Network error. Please try again." },
-      ]);
+      setSaveError("Network error. Please try again.");
+      setStage(Stage.review);
     }
+  }
 
-    setStatus(UploadStatus.error);
+  if (stage === Stage.review || stage === Stage.saving) {
+    return (
+      <div className="w-full max-w-5xl grid grid-cols-2 gap-8 text-left mt-4">
+        <div className="h-[80vh]">
+          <PdfViewer file={file!} />
+        </div>
+        <div className="overflow-y-auto max-h-[80vh] pr-2">
+          <ScanForm
+            initialData={extractedData!}
+            onSubmit={handleSave}
+            isSaving={stage === Stage.saving}
+            saveError={saveError}
+            duplicateError={isDuplicate}
+          />
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -107,9 +160,9 @@ export function UploadForm() {
         )}
       </div>
 
-      {fieldErrors !== null && fieldErrors.length > 0 && (
+      {extractErrors !== null && extractErrors.length > 0 && (
         <div className="border border-red-200 bg-red-50 rounded-lg p-4 text-sm text-red-700 text-left">
-          {fieldErrors.map((err) => (
+          {extractErrors.map((err) => (
             <p key={err.field}>
               {err.field}: {err.message}
             </p>
@@ -117,18 +170,12 @@ export function UploadForm() {
         </div>
       )}
 
-      {duplicateMessage && (
-        <div className="border border-amber-200 bg-amber-50 rounded-lg p-4 text-sm text-amber-800 text-left">
-          {duplicateMessage}
-        </div>
-      )}
-
       <Button
-        disabled={!file || status === UploadStatus.uploading}
+        disabled={!file || stage === Stage.extracting}
         className="w-full px-5 py-[15px] text-sm"
-        onClick={handleUpload}
+        onClick={handleExtract}
       >
-        {status === UploadStatus.uploading ? "Parsing scan..." : "Upload scan"}
+        {stage === Stage.extracting ? "Parsing scan..." : "Upload scan"}
       </Button>
     </div>
   );
