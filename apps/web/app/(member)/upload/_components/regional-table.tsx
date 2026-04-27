@@ -44,10 +44,10 @@ export function RegionalTable({ values, onChange }: RegionalTableProps) {
               Region
             </th>
             <th className="text-left py-2 pr-4 text-sm font-medium text-neutral-900">
-              Lean + BMC (lb)
+              Fat Mass (lb)
             </th>
             <th className="text-left py-2 text-sm font-medium text-neutral-900">
-              Fat (lb)
+              Lean + BMC (lb)
             </th>
           </tr>
         </thead>
@@ -60,16 +60,16 @@ export function RegionalTable({ values, onChange }: RegionalTableProps) {
               <td className="py-2 pr-4">
                 <NumericField
                   label=""
-                  value={values[row.leanKey]}
-                  onChange={(v) => onChange(row.leanKey, v)}
+                  value={values[row.fatKey]}
+                  onChange={(v) => onChange(row.fatKey, v)}
                   compact
                 />
               </td>
               <td className="py-2">
                 <NumericField
                   label=""
-                  value={values[row.fatKey]}
-                  onChange={(v) => onChange(row.fatKey, v)}
+                  value={values[row.leanKey]}
+                  onChange={(v) => onChange(row.leanKey, v)}
                   compact
                 />
               </td>

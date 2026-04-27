@@ -108,11 +108,11 @@ export function UploadForm() {
 
   if (stage === Stage.review || stage === Stage.saving) {
     return (
-      <div className="w-full max-w-5xl grid grid-cols-2 gap-8 text-left mt-4">
-        <div className="h-[80vh]">
+      <div className="w-full max-w-7xl mx-auto px-6 pt-10 pb-12 grid grid-cols-2 gap-8">
+        <div className="sticky top-8 self-start h-[calc(100vh-6rem)]">
           <PdfViewer file={file!} />
         </div>
-        <div className="overflow-y-auto max-h-[80vh] pr-2">
+        <div>
           <ScanForm
             initialData={extractedData!}
             onSubmit={handleSave}
@@ -126,7 +126,15 @@ export function UploadForm() {
   }
 
   return (
-    <div className="flex flex-col gap-4 w-full max-w-sm">
+    <div className="flex flex-col items-center justify-center min-h-[60vh] text-center gap-4 px-4">
+      <h1 className="text-2xl font-semibold text-black">
+        Upload your DEXA scan
+      </h1>
+      <p className="text-neutral-500">
+        Drop your Hologic PDF report and we&apos;ll extract your body
+        composition data automatically.
+      </p>
+      <div className="flex flex-col gap-4 w-full max-w-sm">
       <input
         type="file"
         accept="application/pdf"
@@ -172,11 +180,34 @@ export function UploadForm() {
 
       <Button
         disabled={!file || stage === Stage.extracting}
-        className="w-full px-5 py-[15px] text-sm"
+        className="w-full px-5 py-[15px] text-sm gap-2"
         onClick={handleExtract}
       >
+        {stage === Stage.extracting && (
+          <svg
+            className="animate-spin h-4 w-4 text-white"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="4"
+            />
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+            />
+          </svg>
+        )}
         {stage === Stage.extracting ? "Parsing scan..." : "Upload scan"}
       </Button>
+      </div>
     </div>
   );
 }

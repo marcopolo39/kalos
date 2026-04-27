@@ -20,12 +20,10 @@ export function PdfViewer({ file }: PdfViewerProps) {
   if (!blobUrl) return null;
 
   return (
-    <div className="sticky top-14">
-      <iframe
-        src={blobUrl}
-        className="h-full w-full rounded-lg border border-neutral-200"
-        title="DEXA scan PDF"
-      />
-    </div>
+    <iframe
+      src={blobUrl}
+      className="h-full w-full rounded-lg border border-neutral-200"
+      title="DEXA scan PDF"
+    />
   );
 }

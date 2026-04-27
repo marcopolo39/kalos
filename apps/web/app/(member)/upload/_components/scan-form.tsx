@@ -95,12 +95,12 @@ export function ScanForm({
 
       <FormSection heading="Anthropometrics">
         <NumericField
-          label="Weight (lb)"
+          label="Weight"
           value={data.weight_lb}
           onChange={(v) => setField("weight_lb", v)}
         />
         <NumericField
-          label="Height (in)"
+          label="Height"
           value={data.height_in}
           onChange={(v) => setField("height_in", v)}
         />
@@ -108,37 +108,37 @@ export function ScanForm({
 
       <FormSection heading="Body composition">
         <NumericField
-          label="Total fat %"
+          label="Total Body % Fat"
           value={data.tbf_pct}
           onChange={(v) => setField("tbf_pct", v)}
         />
         <NumericField
-          label="Fat % YN percentile"
+          label="% Fat percentile YN"
           value={data.tbf_pct_pctile_yn}
           onChange={(v) => setField("tbf_pct_pctile_yn", v)}
         />
         <NumericField
-          label="Fat % AM percentile"
+          label="% Fat percentile AM"
           value={data.tbf_pct_pctile_am}
           onChange={(v) => setField("tbf_pct_pctile_am", v)}
         />
         <NumericField
-          label="VAT area cm²"
+          label="Est. VAT Area (cm²)"
           value={data.vat_area_cm2}
           onChange={(v) => setField("vat_area_cm2", v)}
         />
         <NumericField
-          label="ALMI"
+          label="Appen. Lean/Height² (kg/m²)"
           value={data.almi}
           onChange={(v) => setField("almi", v)}
         />
         <NumericField
-          label="ALMI YN percentile"
+          label="Appen. Lean/Height² YN percentile"
           value={data.almi_pctile_yn}
           onChange={(v) => setField("almi_pctile_yn", v)}
         />
         <NumericField
-          label="ALMI AM percentile"
+          label="Appen. Lean/Height² AM percentile"
           value={data.almi_pctile_am}
           onChange={(v) => setField("almi_pctile_am", v)}
         />
@@ -146,7 +146,7 @@ export function ScanForm({
 
       <FormSection heading="Bone density">
         <NumericField
-          label="BMD g/cm²"
+          label="BMD (g/cm²)"
           value={data.total_bmd}
           onChange={(v) => setField("total_bmd", v)}
         />
