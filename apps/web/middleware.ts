@@ -25,9 +25,10 @@ export async function middleware(request: NextRequest) {
 
   const isDashboard =
     pathname === "/dashboard" || pathname.startsWith("/dashboard/");
+  const isUpload = pathname === "/upload" || pathname.startsWith("/upload/");
   const isAuthPage = pathname === "/login" || pathname === "/register";
 
-  if (isDashboard && !user) {
+  if ((isDashboard || isUpload) && !user) {
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.pathname = "/login";
     return redirectWithSessionCookies(redirectUrl, response);
