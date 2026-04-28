@@ -33,10 +33,10 @@ interface PairedSectionProps {
   leftFat: number | null;
   rightLean: number | null;
   rightFat: number | null;
-  side: "arm" | "leg";
+  sectionName: "arm" | "leg";
 }
 
-function PairedSection({ title, leftLean, leftFat, rightLean, rightFat, side }: PairedSectionProps) {
+function PairedSection({ title, leftLean, leftFat, rightLean, rightFat, sectionName }: PairedSectionProps) {
   const diffPct = leanDiffPct(leftLean, rightLean);
   const dom = dominant(leftLean, rightLean);
   const isAsymmetric = diffPct !== null && diffPct > 10;
@@ -54,12 +54,12 @@ function PairedSection({ title, leftLean, leftFat, rightLean, rightFat, side }: 
         </thead>
         <tbody>
           <tr>
-            <td className="py-1 text-neutral-600">Left {side}</td>
+            <td className="py-1 text-neutral-600">Left {sectionName}</td>
             <td className="py-1 text-right font-medium text-neutral-900">{fmt(leftLean)}</td>
             <td className="py-1 text-right font-medium text-neutral-900">{fmt(leftFat)}</td>
           </tr>
           <tr>
-            <td className="py-1 text-neutral-600">Right {side}</td>
+            <td className="py-1 text-neutral-600">Right {sectionName}</td>
             <td className="py-1 text-right font-medium text-neutral-900">{fmt(rightLean)}</td>
             <td className="py-1 text-right font-medium text-neutral-900">{fmt(rightFat)}</td>
           </tr>
@@ -68,7 +68,7 @@ function PairedSection({ title, leftLean, leftFat, rightLean, rightFat, side }: 
       {diffPct !== null && (
         <p className={`text-xs font-medium ${isAsymmetric ? "text-red-600" : "text-green-600"}`}>
           {isAsymmetric
-            ? `${dom} ${side} leads by ${diffPct.toFixed(1)}% lean mass — significant asymmetry`
+            ? `${dom} ${sectionName} leads by ${diffPct.toFixed(1)}% lean mass — significant asymmetry`
             : `${diffPct.toFixed(1)}% L/R difference — within normal range`}
         </p>
       )}
@@ -87,7 +87,7 @@ export function RegionalBreakdownCard(props: RegionalBreakdownCardProps) {
         leftFat={props.l_arm_fat_mass}
         rightLean={props.r_arm_lean_mass}
         rightFat={props.r_arm_fat_mass}
-        side="arm"
+        sectionName="arm"
       />
 
       <div className="border-t border-neutral-100" />
@@ -98,7 +98,7 @@ export function RegionalBreakdownCard(props: RegionalBreakdownCardProps) {
         leftFat={props.l_leg_fat_mass}
         rightLean={props.r_leg_lean_mass}
         rightFat={props.r_leg_fat_mass}
-        side="leg"
+        sectionName="leg"
       />
 
       <div className="border-t border-neutral-100" />
