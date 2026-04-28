@@ -1,21 +1,27 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import type { Database } from "@kalos/supabase";
 import { EmptyState } from "./_components/empty-state";
+import { FirstScanView } from "./_components/first-scan-view";
 
-async function getDashboardData(supabase: SupabaseClient, userId: string) {
-  const [{ data: firstScan }, { data: member }] = await Promise.all([
+async function getDashboardData(
+  supabase: SupabaseClient<Database>,
+  userId: string,
+) {
+  const [{ data: scans }, { data: member }] = await Promise.all([
     supabase
       .from("scans")
-      .select("id")
+      .select("id, scan_date")
       .eq("member_id", userId)
-      .limit(1)
-      .maybeSingle(),
+      .order("scan_date", { ascending: false })
+      .limit(2),
     supabase.from("members").select("name").eq("id", userId).single(),
   ]);
 
   return {
-    hasScans: Boolean(firstScan),
+    scanCount: scans?.length ?? 0,
+    latestScan: scans?.[0] ?? null,
     memberName: member?.name ?? "there",
   };
 }
@@ -33,10 +39,17 @@ export default async function DashboardPage() {
     redirect("/login");
   }
 
-  const { hasScans, memberName } = await getDashboardData(supabase, session.user.id);
+  const { scanCount, latestScan, memberName } = await getDashboardData(
+    supabase,
+    session.user.id,
+  );
 
-  if (!hasScans) {
+  if (scanCount === 0) {
     return <EmptyState memberName={memberName} />;
+  }
+
+  if (scanCount === 1 && latestScan) {
+    return <FirstScanView scan={latestScan} />;
   }
 
   return (
