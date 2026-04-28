@@ -12,7 +12,7 @@ async function getDashboardData(
   const [{ data: scans }, { data: member }] = await Promise.all([
     supabase
       .from("scans")
-      .select("id, scan_date, tbf_pct, tbf_pct_pctile_am")
+      .select("id, scan_date, tbf_pct, tbf_pct_pctile_am, almi, almi_pctile_am, vat_area_cm2")
       .eq("member_id", userId)
       .order("scan_date", { ascending: false })
       .limit(2),
