@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { ButtonLink } from "@/app/_components/button";
 
 export function FirstScanCta() {
   return (
@@ -6,12 +6,9 @@ export function FirstScanCta() {
       <p className="text-neutral-900 text-base">
         Now that you&apos;ve seen your data, let&apos;s set some goals.
       </p>
-      <Link
-        href="/goals"
-        className="bg-blue-500 hover:bg-blue-600 text-white font-medium px-6 py-2.5 rounded-lg transition-colors"
-      >
+      <ButtonLink href="/goals" className="px-6 py-2.5 text-sm">
         Set your goals
-      </Link>
+      </ButtonLink>
     </div>
   );
 }
