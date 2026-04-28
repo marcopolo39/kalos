@@ -12,7 +12,7 @@ async function getDashboardData(
   const [{ data: scans }, { data: member }] = await Promise.all([
     supabase
       .from("scans")
-      .select("id, scan_date, tbf_pct, tbf_pct_pctile_am, almi, almi_pctile_am, vat_area_cm2, total_bmd, total_t_score, l_arm_lean_mass, r_arm_lean_mass, l_leg_lean_mass, r_leg_lean_mass")
+      .select("id, scan_date, tbf_pct, tbf_pct_pctile_am, almi, almi_pctile_am, vat_area_cm2, total_bmd, total_t_score, l_arm_lean_mass, l_arm_fat_mass, r_arm_lean_mass, r_arm_fat_mass, trunk_lean_mass, trunk_fat_mass, l_leg_lean_mass, l_leg_fat_mass, r_leg_lean_mass, r_leg_fat_mass")
       .eq("member_id", userId)
       .order("scan_date", { ascending: false })
       .limit(2),
