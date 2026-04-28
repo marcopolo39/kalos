@@ -1,7 +1,5 @@
 import type { BandInfo } from "@/lib/scan-display/healthy-ranges";
 
-export type { BandInfo };
-
 interface EducationCardProps {
   title: string;
   value: string;
