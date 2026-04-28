@@ -12,17 +12,18 @@ async function getDashboardData(
   const [{ data: scans }, { data: member }] = await Promise.all([
     supabase
       .from("scans")
-      .select("id, scan_date")
+      .select("id, scan_date, tbf_pct, tbf_pct_pctile_am")
       .eq("member_id", userId)
       .order("scan_date", { ascending: false })
       .limit(2),
-    supabase.from("members").select("name").eq("id", userId).single(),
+    supabase.from("members").select("name, sex").eq("id", userId).single(),
   ]);
 
   return {
     scanCount: scans?.length ?? 0,
     latestScan: scans?.[0] ?? null,
     memberName: member?.name ?? "there",
+    memberSex: member?.sex ?? "male",
   };
 }
 
@@ -39,7 +40,7 @@ export default async function DashboardPage() {
     redirect("/login");
   }
 
-  const { scanCount, latestScan, memberName } = await getDashboardData(
+  const { scanCount, latestScan, memberName, memberSex } = await getDashboardData(
     supabase,
     session.user.id,
   );
@@ -49,7 +50,7 @@ export default async function DashboardPage() {
   }
 
   if (scanCount === 1 && latestScan) {
-    return <FirstScanView scan={latestScan} />;
+    return <FirstScanView scan={latestScan} sex={memberSex} />;
   }
 
   return (
