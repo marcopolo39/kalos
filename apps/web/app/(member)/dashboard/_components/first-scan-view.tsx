@@ -34,9 +34,10 @@ type Scan = Pick<
 interface FirstScanViewProps {
   scan: Scan;
   sex: MemberSex;
+  hasGoal: boolean;
 }
 
-export function FirstScanView({ scan, sex }: FirstScanViewProps) {
+export function FirstScanView({ scan, sex, hasGoal }: FirstScanViewProps) {
   return (
     <div className="max-w-5xl mx-auto px-4 py-8">
       <FirstScanHero scanDate={scan.scan_date} />
@@ -67,9 +68,11 @@ export function FirstScanView({ scan, sex }: FirstScanViewProps) {
         />
       </div>
 
-      <div className="mt-4">
-        <FirstScanCta />
-      </div>
+      {!hasGoal && (
+        <div className="mt-4">
+          <FirstScanCta />
+        </div>
+      )}
     </div>
   );
 }
