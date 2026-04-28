@@ -4,6 +4,7 @@ import { AlmiCard } from "./cards/almi-card";
 import { VatCard } from "./cards/vat-card";
 import { BoneDensityCard } from "./cards/bone-density-card";
 import { RegionalBreakdownCard } from "./cards/regional-breakdown-card";
+import { FirstScanCta } from "./first-scan-cta";
 
 interface Scan {
   id: string;
@@ -56,6 +57,7 @@ export function FirstScanView({ scan, sex }: FirstScanViewProps) {
         r_leg_lean_mass={scan.r_leg_lean_mass}
         r_leg_fat_mass={scan.r_leg_fat_mass}
       />
+      <FirstScanCta />
     </div>
   );
 }
