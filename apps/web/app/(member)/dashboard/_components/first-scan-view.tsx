@@ -1,3 +1,5 @@
+import type { Database } from "@kalos/supabase";
+import type { MemberSex } from "@/lib/scan-display/types";
 import { FirstScanHero } from "./first-scan-hero";
 import { BodyFatCard } from "./cards/body-fat-card";
 import { AlmiCard } from "./cards/almi-card";
@@ -6,31 +8,32 @@ import { BoneDensityCard } from "./cards/bone-density-card";
 import { RegionalBreakdownCard } from "./cards/regional-breakdown-card";
 import { FirstScanCta } from "./first-scan-cta";
 
-interface Scan {
-  id: string;
-  scan_date: string;
-  tbf_pct: number | null;
-  tbf_pct_pctile_am: number | null;
-  almi: number | null;
-  almi_pctile_am: number | null;
-  vat_area_cm2: number | null;
-  total_bmd: number | null;
-  total_t_score: number | null;
-  l_arm_lean_mass: number | null;
-  l_arm_fat_mass: number | null;
-  r_arm_lean_mass: number | null;
-  r_arm_fat_mass: number | null;
-  trunk_lean_mass: number | null;
-  trunk_fat_mass: number | null;
-  l_leg_lean_mass: number | null;
-  l_leg_fat_mass: number | null;
-  r_leg_lean_mass: number | null;
-  r_leg_fat_mass: number | null;
-}
+type Scan = Pick<
+  Database["public"]["Tables"]["scans"]["Row"],
+  | "id"
+  | "scan_date"
+  | "tbf_pct"
+  | "tbf_pct_pctile_am"
+  | "almi"
+  | "almi_pctile_am"
+  | "vat_area_cm2"
+  | "total_bmd"
+  | "total_t_score"
+  | "l_arm_lean_mass"
+  | "l_arm_fat_mass"
+  | "r_arm_lean_mass"
+  | "r_arm_fat_mass"
+  | "trunk_lean_mass"
+  | "trunk_fat_mass"
+  | "l_leg_lean_mass"
+  | "l_leg_fat_mass"
+  | "r_leg_lean_mass"
+  | "r_leg_fat_mass"
+>;
 
 interface FirstScanViewProps {
   scan: Scan;
-  sex: string;
+  sex: MemberSex;
 }
 
 export function FirstScanView({ scan, sex }: FirstScanViewProps) {

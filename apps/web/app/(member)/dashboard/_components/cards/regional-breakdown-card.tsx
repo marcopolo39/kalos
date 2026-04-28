@@ -20,13 +20,6 @@ function leanDiffPct(a: number | null, b: number | null): number | null {
   return (Math.abs(a - b) / ((a + b) / 2)) * 100;
 }
 
-function dominant(left: number | null, right: number | null): "Left" | "Right" | null {
-  if (left === null || right === null) return null;
-  if (left > right) return "Left";
-  if (right > left) return "Right";
-  return null;
-}
-
 interface PairedSectionProps {
   title: string;
   leftLean: number | null;
@@ -38,7 +31,6 @@ interface PairedSectionProps {
 
 function PairedSection({ title, leftLean, leftFat, rightLean, rightFat, sectionName }: PairedSectionProps) {
   const diffPct = leanDiffPct(leftLean, rightLean);
-  const dom = dominant(leftLean, rightLean);
   const isAsymmetric = diffPct !== null && diffPct > 10;
 
   return (
@@ -68,7 +60,7 @@ function PairedSection({ title, leftLean, leftFat, rightLean, rightFat, sectionN
       {diffPct !== null && (
         <p className={`text-xs font-medium ${isAsymmetric ? "text-red-600" : "text-green-600"}`}>
           {isAsymmetric
-            ? `${dom} ${sectionName} leads by ${diffPct.toFixed(1)}% lean mass — significant asymmetry`
+            ? `${(leftLean ?? 0) > (rightLean ?? 0) ? "Left" : "Right"} ${sectionName} leads by ${diffPct.toFixed(1)}% lean mass — significant asymmetry`
             : `${diffPct.toFixed(1)}% L/R difference — within normal range`}
         </p>
       )}

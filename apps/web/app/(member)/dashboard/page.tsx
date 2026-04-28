@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@kalos/supabase";
+import type { MemberSex } from "@/lib/scan-display/types";
 import { EmptyState } from "./_components/empty-state";
 import { FirstScanView } from "./_components/first-scan-view";
 
@@ -9,21 +10,22 @@ async function getDashboardData(
   supabase: SupabaseClient<Database>,
   userId: string,
 ) {
-  const [{ data: scans }, { data: member }] = await Promise.all([
+  const [{ data: scans, count }, { data: member }] = await Promise.all([
     supabase
       .from("scans")
-      .select("id, scan_date, tbf_pct, tbf_pct_pctile_am, almi, almi_pctile_am, vat_area_cm2, total_bmd, total_t_score, l_arm_lean_mass, l_arm_fat_mass, r_arm_lean_mass, r_arm_fat_mass, trunk_lean_mass, trunk_fat_mass, l_leg_lean_mass, l_leg_fat_mass, r_leg_lean_mass, r_leg_fat_mass")
+      .select("id, scan_date, tbf_pct, tbf_pct_pctile_am, almi, almi_pctile_am, vat_area_cm2, total_bmd, total_t_score, l_arm_lean_mass, l_arm_fat_mass, r_arm_lean_mass, r_arm_fat_mass, trunk_lean_mass, trunk_fat_mass, l_leg_lean_mass, l_leg_fat_mass, r_leg_lean_mass, r_leg_fat_mass", { count: "exact" })
       .eq("member_id", userId)
       .order("scan_date", { ascending: false })
-      .limit(2),
+      .limit(1),
     supabase.from("members").select("name, sex").eq("id", userId).single(),
   ]);
 
+  const sex = member?.sex;
   return {
-    scanCount: scans?.length ?? 0,
+    scanCount: count ?? 0,
     latestScan: scans?.[0] ?? null,
     memberName: member?.name ?? "there",
-    memberSex: member?.sex ?? "unknown",
+    memberSex: (sex === "male" || sex === "female" ? sex : "male") as MemberSex,
   };
 }
 

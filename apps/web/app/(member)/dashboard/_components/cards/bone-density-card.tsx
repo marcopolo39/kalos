@@ -1,4 +1,4 @@
-import type { BandInfo } from "@/lib/scan-display/healthy-ranges";
+import type { BandInfo } from "@/lib/scan-display/types";
 import { EducationCard } from "./education-card";
 
 interface BoneDensityCardProps {
@@ -13,7 +13,7 @@ function tScoreBand(tScore: number): BandInfo {
     return { status: "healthy", label: "Normal bone density", rangeText: `T-score ${display} — Normal: ≥ −1` };
   }
   if (tScore >= -2.5) {
-    return { status: "below", label: "Osteopenia", rangeText: `T-score ${display} — Osteopenia: −2.5 to −1` };
+    return { status: "warning", label: "Osteopenia", rangeText: `T-score ${display} — Osteopenia: −2.5 to −1` };
   }
   return { status: "above", label: "Osteoporosis", rangeText: `T-score ${display} — Osteoporosis: < −2.5` };
 }

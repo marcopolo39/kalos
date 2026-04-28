@@ -1,20 +1,15 @@
 // Gallagher et al. (2000) healthy body fat ranges for adults aged 20–39.
 // Women 20–32 %, Men 10–22 %.
 
-export interface BandInfo {
-  status: "healthy" | "above" | "below";
-  low?: number;
-  high?: number;
-  label?: string;
-  rangeText?: string;
-}
+import type { MemberSex, BandInfo } from "./types";
+export type { MemberSex, BandInfo };
 
 export interface BodyFatRange {
   low: number;
   high: number;
 }
 
-export function bodyFatRange(sex: string): BodyFatRange {
+export function bodyFatRange(sex: MemberSex): BodyFatRange {
   return sex === "female" ? { low: 20, high: 32 } : { low: 10, high: 22 };
 }
 

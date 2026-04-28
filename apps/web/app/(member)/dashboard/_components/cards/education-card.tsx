@@ -1,4 +1,4 @@
-import type { BandInfo } from "@/lib/scan-display/healthy-ranges";
+import type { BandInfo } from "@/lib/scan-display/types";
 
 interface EducationCardProps {
   title: string;
@@ -19,6 +19,7 @@ const bandStyles = {
   healthy: { label: "Within healthy range", className: "text-green-600" },
   above: { label: "Above healthy range", className: "text-red-600" },
   below: { label: "Below healthy range", className: "text-neutral-500" },
+  warning: { label: "Needs attention", className: "text-amber-600" },
 } as const;
 
 export function EducationCard({

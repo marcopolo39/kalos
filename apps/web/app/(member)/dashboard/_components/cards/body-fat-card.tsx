@@ -1,10 +1,11 @@
-import { bodyFatRange, type BandInfo } from "@/lib/scan-display/healthy-ranges";
+import { bodyFatRange } from "@/lib/scan-display/healthy-ranges";
+import type { BandInfo, MemberSex } from "@/lib/scan-display/types";
 import { EducationCard } from "./education-card";
 
 interface BodyFatCardProps {
   tbf_pct: number | null;
   tbf_pct_pctile_am: number | null;
-  sex: string;
+  sex: MemberSex;
 }
 
 const EXPLANATION =
@@ -14,30 +15,23 @@ const EXPLANATION =
   "bioelectrical methods.";
 
 export function BodyFatCard({ tbf_pct, tbf_pct_pctile_am, sex }: BodyFatCardProps) {
-  if (tbf_pct === null) {
-    return (
-      <EducationCard
-        title="Body Fat"
-        value="—"
-        unit="%"
-        percentileAm={null}
-        band={null}
-        explanation={EXPLANATION}
-      />
-    );
-  }
-
   const range = bodyFatRange(sex);
-  const status: BandInfo["status"] =
-    tbf_pct < range.low ? "below" : tbf_pct > range.high ? "above" : "healthy";
+  const band: BandInfo | null =
+    tbf_pct !== null
+      ? {
+          status: tbf_pct < range.low ? "below" : tbf_pct > range.high ? "above" : "healthy",
+          low: range.low,
+          high: range.high,
+        }
+      : null;
 
   return (
     <EducationCard
       title="Body Fat"
-      value={tbf_pct.toFixed(1)}
+      value={tbf_pct !== null ? tbf_pct.toFixed(1) : "—"}
       unit="%"
-      percentileAm={tbf_pct_pctile_am}
-      band={{ status, low: range.low, high: range.high }}
+      percentileAm={tbf_pct !== null ? tbf_pct_pctile_am : null}
+      band={band}
       explanation={EXPLANATION}
     />
   );
