@@ -1,8 +1,4 @@
-export interface BandInfo {
-  status: "healthy" | "above" | "below";
-  low: number;
-  high: number;
-}
+import type { BandInfo } from "@/lib/scan-display/healthy-ranges";
 
 interface EducationCardProps {
   title: string;
@@ -53,11 +49,14 @@ export function EducationCard({
       {band !== null && (
         <div className="border-t border-neutral-100 pt-3">
           <span className={`text-sm font-semibold ${bandStyles[band.status].className}`}>
-            {bandStyles[band.status].label}
+            {band.label ?? bandStyles[band.status].label}
           </span>
-          <p className="text-xs text-neutral-500 mt-0.5">
-            Healthy range: {band.low}–{band.high}%
-          </p>
+          {(band.rangeText !== undefined ||
+            (band.low !== undefined && band.high !== undefined)) && (
+            <p className="text-xs text-neutral-500 mt-0.5">
+              {band.rangeText ?? `Healthy range: ${band.low}–${band.high}%`}
+            </p>
+          )}
         </div>
       )}
     </div>
