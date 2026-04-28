@@ -28,7 +28,7 @@ export function almiBand(percentileAm: number): BandInfo {
 
 // VAT risk bands — Neeland et al. (2019)
 export function vatRiskBand(cm2: number): BandInfo {
-  if (cm2 < 100) return { status: "healthy", label: "Low risk", rangeText: "< 100 cm²" };
-  if (cm2 < 160) return { status: "above", label: "Moderate risk", rangeText: "100–160 cm²" };
+  if (cm2 < 80) return { status: "healthy", label: "Low risk", rangeText: "< 80 cm²" };
+  if (cm2 < 160) return { status: "above", label: "Moderate risk", rangeText: "80–160 cm²" };
   return { status: "above", label: "High risk", rangeText: "> 160 cm²" };
 }
