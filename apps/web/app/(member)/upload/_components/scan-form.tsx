@@ -108,6 +108,16 @@ export function ScanForm({
 
       <FormSection heading="Body composition">
         <NumericField
+          label="Total Lean Mass (lb)"
+          value={data.total_lean_mass}
+          onChange={(v) => setField("total_lean_mass", v)}
+        />
+        <NumericField
+          label="Total Fat Mass (lb)"
+          value={data.total_fat_mass}
+          onChange={(v) => setField("total_fat_mass", v)}
+        />
+        <NumericField
           label="Total Body % Fat"
           value={data.tbf_pct}
           onChange={(v) => setField("tbf_pct", v)}

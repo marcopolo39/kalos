@@ -1,5 +1,17 @@
 export type MemberSex = "male" | "female";
 
+export type GoalDirection = "decrease" | "increase" | "maintain";
+export type GoalMetricKey = "tbf_pct" | "almi" | "vat_area_cm2" | "weight_lb";
+
+export interface GoalMetric {
+  metric: GoalMetricKey;
+  direction: GoalDirection;
+}
+
+export interface GoalRow {
+  metrics: GoalMetric[];
+}
+
 export interface BandInfo {
   status: "healthy" | "above" | "below" | "warning";
   low?: number;

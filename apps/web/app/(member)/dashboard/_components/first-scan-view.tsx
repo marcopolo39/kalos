@@ -19,6 +19,8 @@ type Scan = Pick<
   | "vat_area_cm2"
   | "total_bmd"
   | "total_t_score"
+  | "total_lean_mass"
+  | "total_fat_mass"
   | "l_arm_lean_mass"
   | "l_arm_fat_mass"
   | "r_arm_lean_mass"
@@ -55,6 +57,8 @@ export function FirstScanView({ scan, sex, hasGoal }: FirstScanViewProps) {
 
       <div className="mt-4">
         <RegionalBreakdownCard
+          total_lean_mass={scan.total_lean_mass}
+          total_fat_mass={scan.total_fat_mass}
           l_arm_lean_mass={scan.l_arm_lean_mass}
           l_arm_fat_mass={scan.l_arm_fat_mass}
           r_arm_lean_mass={scan.r_arm_lean_mass}

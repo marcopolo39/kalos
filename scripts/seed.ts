@@ -92,17 +92,21 @@ function bodyComp(
   const lLegFat = r(fatKg * 0.17);
   const rLegFat = r(fatKg * 0.17);
 
+  const kgToLb = (kg: number) => r(kg * 2.205);
+
   return {
-    l_arm_lean_mass: lArmLean,
-    r_arm_lean_mass: rArmLean,
-    trunk_lean_mass: trunkLean,
-    l_leg_lean_mass: lLegLean,
-    r_leg_lean_mass: rLegLean,
-    l_arm_fat_mass: lArmFat,
-    r_arm_fat_mass: rArmFat,
-    trunk_fat_mass: trunkFat,
-    l_leg_fat_mass: lLegFat,
-    r_leg_fat_mass: rLegFat,
+    total_lean_mass: kgToLb(leanKg),
+    total_fat_mass: kgToLb(fatKg),
+    l_arm_lean_mass: kgToLb(lArmLean),
+    r_arm_lean_mass: kgToLb(rArmLean),
+    trunk_lean_mass: kgToLb(trunkLean),
+    l_leg_lean_mass: kgToLb(lLegLean),
+    r_leg_lean_mass: kgToLb(rLegLean),
+    l_arm_fat_mass: kgToLb(lArmFat),
+    r_arm_fat_mass: kgToLb(rArmFat),
+    trunk_fat_mass: kgToLb(trunkFat),
+    l_leg_fat_mass: kgToLb(lLegFat),
+    r_leg_fat_mass: kgToLb(rLegFat),
   };
 }
 
