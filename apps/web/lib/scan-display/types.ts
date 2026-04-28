@@ -6,6 +6,8 @@ export type GoalMetricKey = "tbf_pct" | "almi" | "vat_area_cm2" | "weight_lb";
 export interface GoalMetric {
   metric: GoalMetricKey;
   direction: GoalDirection;
+  baseline_value?: number;
+  target_value?: number;
 }
 
 export interface GoalRow {

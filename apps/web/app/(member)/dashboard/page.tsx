@@ -7,17 +7,20 @@ import type { MemberSex } from "@/lib/scan-display/types";
 import { EmptyState } from "./_components/empty-state";
 import { FirstScanView } from "./_components/first-scan-view";
 import { SecondScanView } from "./_components/second-scan/second-scan-view";
+import { MultiScanView } from "./_components/multi-scan/multi-scan-view";
 
 const GoalMetricSchema = z.object({
   metric: z.enum(["tbf_pct", "almi", "vat_area_cm2", "weight_lb"]),
   direction: z.enum(["decrease", "increase", "maintain"]),
+  baseline_value: z.number().optional(),
+  target_value: z.number().optional(),
 });
 const GoalRowSchema = z.object({
   metrics: z.array(GoalMetricSchema).default([]),
 });
 
 const SCAN_FIELDS =
-  "id, scan_date, tbf_pct, tbf_pct_pctile_am, almi, almi_pctile_am, vat_area_cm2, weight_lb, total_bmd, total_t_score, total_lean_mass, total_fat_mass, l_arm_lean_mass, l_arm_fat_mass, r_arm_lean_mass, r_arm_fat_mass, trunk_lean_mass, trunk_fat_mass, l_leg_lean_mass, l_leg_fat_mass, r_leg_lean_mass, r_leg_fat_mass";
+  "id, scan_date, tbf_pct, tbf_pct_pctile_am, almi, almi_pctile_am, vat_area_cm2, weight_lb, total_bmd, total_t_score, total_lean_mass, total_fat_mass, l_arm_lean_mass, l_arm_fat_mass, r_arm_lean_mass, r_arm_fat_mass, trunk_lean_mass, trunk_fat_mass, l_leg_lean_mass, l_leg_fat_mass, r_leg_lean_mass, r_leg_fat_mass, source_pdf_path";
 
 async function getDashboardData(
   supabase: SupabaseClient<Database>,
@@ -29,8 +32,7 @@ async function getDashboardData(
         .from("scans")
         .select(SCAN_FIELDS, { count: "exact" })
         .eq("member_id", userId)
-        .order("scan_date", { ascending: false })
-        .limit(2),
+        .order("scan_date", { ascending: false }),
       supabase.from("members").select("name, sex").eq("id", userId).single(),
       supabase
         .from("member_goals")
@@ -49,6 +51,25 @@ async function getDashboardData(
       return result.success ? [result.data] : [];
     }),
   };
+}
+
+async function generateSignedUrls(
+  supabase: SupabaseClient<Database>,
+  scans: Array<{ id: string; source_pdf_path: string | null }>,
+): Promise<Record<string, string>> {
+  const withPdfs = scans.filter((s) => s.source_pdf_path !== null);
+  if (withPdfs.length === 0) return {};
+
+  const entries = await Promise.all(
+    withPdfs.map(async (scan) => {
+      const { data } = await supabase.storage
+        .from("scans")
+        .createSignedUrl(scan.source_pdf_path!, 300);
+      return data?.signedUrl ? ([scan.id, data.signedUrl] as const) : null;
+    }),
+  );
+
+  return Object.fromEntries(entries.filter((e): e is [string, string] => e !== null));
 }
 
 export default async function DashboardPage() {
@@ -92,10 +113,17 @@ export default async function DashboardPage() {
     );
   }
 
-  return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] text-center gap-4 px-4">
-      <h1 className="text-2xl font-semibold text-black">Dashboard coming soon</h1>
-      <p className="text-neutral-500">Your scan data will appear here.</p>
-    </div>
-  );
+  if (scanCount >= 3) {
+    const signedUrls = await generateSignedUrls(supabase, scans);
+    return (
+      <MultiScanView
+        scans={scans}
+        goals={goals}
+        memberName={memberName}
+        signedUrls={signedUrls}
+      />
+    );
+  }
+
+  return null;
 }
