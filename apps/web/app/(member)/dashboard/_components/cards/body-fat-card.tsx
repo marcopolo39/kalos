@@ -1,4 +1,4 @@
-import { bodyFatRange, type BandInfo } from "@/lib/scan-display/healthy-ranges";
+import { bodyFatRange } from "@/lib/scan-display/healthy-ranges";
 import { EducationCard } from "./education-card";
 
 interface BodyFatCardProps {
@@ -28,7 +28,7 @@ export function BodyFatCard({ tbf_pct, tbf_pct_pctile_am, sex }: BodyFatCardProp
   }
 
   const range = bodyFatRange(sex);
-  const status: BandInfo["status"] =
+  const status =
     tbf_pct < range.low ? "below" : tbf_pct > range.high ? "above" : "healthy";
 
   return (
