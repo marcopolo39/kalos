@@ -70,52 +70,50 @@ function PairedSection({ title, leftLean, leftFat, rightLean, rightFat, sectionN
 
 export function RegionalBreakdownCard(props: RegionalBreakdownCardProps) {
   return (
-    <div className="bg-white border border-neutral-200 rounded-lg p-5 space-y-5">
-      <p className="text-sm font-medium text-neutral-500">Regional Breakdown</p>
+    <div className="bg-white border border-neutral-200 rounded-lg p-6">
+      <h2 className="text-lg font-bold text-black leading-tight mb-5">Regional Breakdown</h2>
 
-      <PairedSection
-        title="Arms"
-        leftLean={props.l_arm_lean_mass}
-        leftFat={props.l_arm_fat_mass}
-        rightLean={props.r_arm_lean_mass}
-        rightFat={props.r_arm_fat_mass}
-        sectionName="arm"
-      />
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <PairedSection
+          title="Arms"
+          leftLean={props.l_arm_lean_mass}
+          leftFat={props.l_arm_fat_mass}
+          rightLean={props.r_arm_lean_mass}
+          rightFat={props.r_arm_fat_mass}
+          sectionName="arm"
+        />
 
-      <div className="border-t border-neutral-100" />
+        <PairedSection
+          title="Legs"
+          leftLean={props.l_leg_lean_mass}
+          leftFat={props.l_leg_fat_mass}
+          rightLean={props.r_leg_lean_mass}
+          rightFat={props.r_leg_fat_mass}
+          sectionName="leg"
+        />
 
-      <PairedSection
-        title="Legs"
-        leftLean={props.l_leg_lean_mass}
-        leftFat={props.l_leg_fat_mass}
-        rightLean={props.r_leg_lean_mass}
-        rightFat={props.r_leg_fat_mass}
-        sectionName="leg"
-      />
-
-      <div className="border-t border-neutral-100" />
-
-      <div>
-        <p className="text-xs font-semibold text-neutral-500 uppercase tracking-wide mb-2">Trunk</p>
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="text-xs text-neutral-400">
-              <th className="text-left pb-1 font-normal"></th>
-              <th className="text-right pb-1 font-normal">Lean (lb)</th>
-              <th className="text-right pb-1 font-normal">Fat (lb)</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td className="py-1 text-neutral-600">Trunk</td>
-              <td className="py-1 text-right font-medium text-neutral-900">{fmt(props.trunk_lean_mass)}</td>
-              <td className="py-1 text-right font-medium text-neutral-900">{fmt(props.trunk_fat_mass)}</td>
-            </tr>
-          </tbody>
-        </table>
+        <div>
+          <p className="text-xs font-semibold text-neutral-500 uppercase tracking-wide mb-2">Trunk</p>
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="text-xs text-neutral-400">
+                <th className="text-left pb-1 font-normal"></th>
+                <th className="text-right pb-1 font-normal">Lean (lb)</th>
+                <th className="text-right pb-1 font-normal">Fat (lb)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td className="py-1 text-neutral-600">Trunk</td>
+                <td className="py-1 text-right font-medium text-neutral-900">{fmt(props.trunk_lean_mass)}</td>
+                <td className="py-1 text-right font-medium text-neutral-900">{fmt(props.trunk_fat_mass)}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
 
-      <p className="text-xs text-neutral-400 border-t border-neutral-100 pt-3">
+      <p className="text-xs text-neutral-400 border-t border-neutral-100 pt-4 mt-5">
         Lean values include bone mineral content (Lean + BMC), as reported by Hologic DEXA.
         Asymmetry flagged at &gt;10% L/R lean-mass difference.
       </p>
