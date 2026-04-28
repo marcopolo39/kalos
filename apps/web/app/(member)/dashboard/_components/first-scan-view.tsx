@@ -1,11 +1,9 @@
-import { detectAsymmetry } from "@/lib/scan-display/asymmetry";
 import { FirstScanHero } from "./first-scan-hero";
 import { BodyFatCard } from "./cards/body-fat-card";
 import { AlmiCard } from "./cards/almi-card";
 import { VatCard } from "./cards/vat-card";
 import { BoneDensityCard } from "./cards/bone-density-card";
 import { RegionalBreakdownCard } from "./cards/regional-breakdown-card";
-import { AsymmetryCallout } from "./asymmetry-callout";
 
 interface Scan {
   id: string;
@@ -35,8 +33,6 @@ interface FirstScanViewProps {
 }
 
 export function FirstScanView({ scan, sex }: FirstScanViewProps) {
-  const asymmetries = detectAsymmetry(scan);
-
   return (
     <div className="max-w-2xl mx-auto px-4 py-8 space-y-4">
       <FirstScanHero scanDate={scan.scan_date} />
@@ -60,7 +56,6 @@ export function FirstScanView({ scan, sex }: FirstScanViewProps) {
         r_leg_lean_mass={scan.r_leg_lean_mass}
         r_leg_fat_mass={scan.r_leg_fat_mass}
       />
-      <AsymmetryCallout asymmetries={asymmetries} />
     </div>
   );
 }
