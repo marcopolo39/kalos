@@ -1,22 +1,31 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import type { Database } from "@kalos/supabase";
+import type { MemberSex } from "@/lib/scan-display/types";
 import { EmptyState } from "./_components/empty-state";
+import { FirstScanView } from "./_components/first-scan-view";
 
-async function getDashboardData(supabase: SupabaseClient, userId: string) {
-  const [{ data: firstScan }, { data: member }] = await Promise.all([
+async function getDashboardData(
+  supabase: SupabaseClient<Database>,
+  userId: string,
+) {
+  const [{ data: scans, count }, { data: member }] = await Promise.all([
     supabase
       .from("scans")
-      .select("id")
+      .select("id, scan_date, tbf_pct, tbf_pct_pctile_am, almi, almi_pctile_am, vat_area_cm2, total_bmd, total_t_score, l_arm_lean_mass, l_arm_fat_mass, r_arm_lean_mass, r_arm_fat_mass, trunk_lean_mass, trunk_fat_mass, l_leg_lean_mass, l_leg_fat_mass, r_leg_lean_mass, r_leg_fat_mass", { count: "exact" })
       .eq("member_id", userId)
-      .limit(1)
-      .maybeSingle(),
-    supabase.from("members").select("name").eq("id", userId).single(),
+      .order("scan_date", { ascending: false })
+      .limit(1),
+    supabase.from("members").select("name, sex").eq("id", userId).single(),
   ]);
 
+  const sex = member?.sex;
   return {
-    hasScans: Boolean(firstScan),
+    scanCount: count ?? 0,
+    latestScan: scans?.[0] ?? null,
     memberName: member?.name ?? "there",
+    memberSex: (sex === "male" || sex === "female" ? sex : "male") as MemberSex,
   };
 }
 
@@ -33,10 +42,17 @@ export default async function DashboardPage() {
     redirect("/login");
   }
 
-  const { hasScans, memberName } = await getDashboardData(supabase, session.user.id);
+  const { scanCount, latestScan, memberName, memberSex } = await getDashboardData(
+    supabase,
+    session.user.id,
+  );
 
-  if (!hasScans) {
+  if (scanCount === 0) {
     return <EmptyState memberName={memberName} />;
+  }
+
+  if (scanCount === 1 && latestScan) {
+    return <FirstScanView scan={latestScan} sex={memberSex} />;
   }
 
   return (
