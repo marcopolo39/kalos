@@ -13,7 +13,6 @@ type Scan = Pick<
   | "vat_area_cm2"
   | "weight_lb"
   | "total_lean_mass"
-  | "total_fat_mass"
   | "source_pdf_path"
 >;
 
@@ -69,6 +68,8 @@ export function MultiScanView({ scans, goals, memberName, signedUrls }: MultiSca
   const chronological = [...scans].reverse();
   const first = chronological[0];
   const latest = chronological[chronological.length - 1];
+
+  if (!first || !latest) return null;
 
   const months = monthsBetween(first.scan_date, latest.scan_date);
   const monthsLabel = months === 1 ? "1 month" : `${months} months`;
@@ -193,7 +194,7 @@ export function MultiScanView({ scans, goals, memberName, signedUrls }: MultiSca
 
       <TrajectoryCallout scans={chronological} />
 
-      <ScanHistoryTable scans={chronological} signedUrls={signedUrls} />
+      <ScanHistoryTable scans={scans} signedUrls={signedUrls} />
     </div>
   );
 }

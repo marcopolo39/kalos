@@ -31,7 +31,7 @@ interface TrendChartProps {
 }
 
 const CHART_CONFIG: ChartConfig = {
-  value: { label: "Value", color: "#1D4ED8" },
+  value: { label: "Value", color: "#3B82F6" },
 };
 
 export function TrendChart({
@@ -93,14 +93,14 @@ export function TrendChart({
           {goalBaseline !== undefined && (
             <ReferenceLine
               y={goalBaseline}
-              stroke="#1D4ED8"
+              stroke="#3B82F6"
               strokeDasharray="4 4"
               strokeOpacity={0.4}
               label={{
                 value: "Baseline",
                 position: "insideTopRight",
                 fontSize: 10,
-                fill: "#1D4ED8",
+                fill: "#3B82F6",
                 fillOpacity: 0.6,
               }}
             />
@@ -108,17 +108,17 @@ export function TrendChart({
           <ChartTooltip
             content={
               <ChartTooltipContent
-                formatter={(v) => `${(v as number).toFixed(decimals)} ${unit}`}
+                formatter={(v) => unit === "%" ? `${(v as number).toFixed(decimals)}%` : `${(v as number).toFixed(decimals)} ${unit}`}
               />
             }
           />
           <Line
             type="monotone"
             dataKey="value"
-            stroke="#1D4ED8"
+            stroke="#3B82F6"
             strokeWidth={2}
-            dot={{ r: 4, fill: "#1D4ED8", strokeWidth: 0 }}
-            activeDot={{ r: 5, fill: "#1D4ED8" }}
+            dot={{ r: 4, fill: "#3B82F6", strokeWidth: 0 }}
+            activeDot={{ r: 5, fill: "#3B82F6" }}
             connectNulls={false}
           />
         </LineChart>

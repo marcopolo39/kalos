@@ -10,6 +10,11 @@ interface Trajectory {
   detail: string;
 }
 
+const TBF_NOISE = 0.5;
+const LEAN_NOISE = 0.5;
+const VAT_NOISE = 3;
+const ALMI_GAIN_THRESHOLD = 0.1;
+
 function computeTrajectory(first: TrendScan, last: TrendScan): Trajectory {
   const tbfChange =
     first.tbf_pct !== null && last.tbf_pct !== null
@@ -26,18 +31,18 @@ function computeTrajectory(first: TrendScan, last: TrendScan): Trajectory {
   const almiChange =
     first.almi !== null && last.almi !== null ? last.almi - first.almi : null;
 
-  const tbfDown = tbfChange !== null && tbfChange < -0.5;
-  const tbfUp = tbfChange !== null && tbfChange > 0.5;
+  const tbfDown = tbfChange !== null && tbfChange < -TBF_NOISE;
+  const tbfUp = tbfChange !== null && tbfChange > TBF_NOISE;
   const tbfStable = !tbfDown && !tbfUp;
 
-  const leanUp = leanChange !== null && leanChange > 0.5;
-  const leanDown = leanChange !== null && leanChange < -0.5;
+  const leanUp = leanChange !== null && leanChange > LEAN_NOISE;
+  const leanDown = leanChange !== null && leanChange < -LEAN_NOISE;
   const leanStable = !leanUp && !leanDown;
 
-  const vatDown = vatChange !== null && vatChange < -3;
-  const vatUp = vatChange !== null && vatChange > 3;
+  const vatDown = vatChange !== null && vatChange < -VAT_NOISE;
+  const vatUp = vatChange !== null && vatChange > VAT_NOISE;
 
-  const almiUp = almiChange !== null && almiChange > 0.1;
+  const almiUp = almiChange !== null && almiChange > ALMI_GAIN_THRESHOLD;
 
   if (leanUp && tbfDown) {
     return {

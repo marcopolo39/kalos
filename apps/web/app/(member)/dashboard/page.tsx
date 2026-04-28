@@ -57,14 +57,16 @@ async function generateSignedUrls(
   supabase: SupabaseClient<Database>,
   scans: Array<{ id: string; source_pdf_path: string | null }>,
 ): Promise<Record<string, string>> {
-  const withPdfs = scans.filter((s) => s.source_pdf_path !== null);
+  const withPdfs = scans.filter(
+    (s): s is typeof s & { source_pdf_path: string } => s.source_pdf_path !== null,
+  );
   if (withPdfs.length === 0) return {};
 
   const entries = await Promise.all(
     withPdfs.map(async (scan) => {
       const { data } = await supabase.storage
         .from("scans")
-        .createSignedUrl(scan.source_pdf_path!, 300);
+        .createSignedUrl(scan.source_pdf_path, 300);
       return data?.signedUrl ? ([scan.id, data.signedUrl] as const) : null;
     }),
   );

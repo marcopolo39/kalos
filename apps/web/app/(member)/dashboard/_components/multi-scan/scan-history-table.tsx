@@ -25,9 +25,6 @@ function fmt(v: number | null, dec = 1): string {
 }
 
 export function ScanHistoryTable({ scans, signedUrls }: ScanHistoryTableProps) {
-  // Reverse so most recent scan appears first in the table
-  const rows = [...scans].reverse();
-
   return (
     <div className="bg-white border border-neutral-200 rounded-lg shadow-sm mt-4 overflow-hidden">
       <div className="px-6 py-4 border-b border-neutral-100">
@@ -46,7 +43,7 @@ export function ScanHistoryTable({ scans, signedUrls }: ScanHistoryTableProps) {
             </tr>
           </thead>
           <tbody className="divide-y divide-neutral-100">
-            {rows.map((scan) => {
+            {scans.map((scan) => {
               const url = signedUrls[scan.id];
               return (
                 <tr key={scan.id} className="hover:bg-neutral-50 transition-colors">
@@ -71,7 +68,7 @@ export function ScanHistoryTable({ scans, signedUrls }: ScanHistoryTableProps) {
                         href={url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-700 hover:bg-blue-800 text-white text-xs font-medium rounded-md transition-colors"
+                        className="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white text-xs font-medium rounded-md transition-colors"
                       >
                         Download
                       </a>
