@@ -1,6 +1,6 @@
 import type { Database } from "@kalos/supabase";
 import type { GoalRow } from "@/lib/scan-display/types";
-import { computeDelta } from "@/lib/scan-display/delta";
+import { computeDelta, computeWeightDelta } from "@/lib/scan-display/delta";
 import { SecondScanHero } from "./second-scan-hero";
 import { DeltaCard } from "./delta-card";
 import { GoalProgressSection } from "./goal-progress-section";
@@ -13,6 +13,8 @@ type Scan = Pick<
   | "almi"
   | "vat_area_cm2"
   | "weight_lb"
+  | "total_lean_mass"
+  | "total_fat_mass"
   | "l_arm_lean_mass"
   | "l_arm_fat_mass"
   | "r_arm_lean_mass"
@@ -35,8 +37,13 @@ export function SecondScanView({ previous, current, goals }: SecondScanViewProps
   const tbfDelta = computeDelta(previous.tbf_pct, current.tbf_pct, "tbf_pct");
   const vatDelta = computeDelta(previous.vat_area_cm2, current.vat_area_cm2, "vat");
   const almiDelta = computeDelta(previous.almi, current.almi, "almi");
-
-  const weightDelta = computeDelta(previous.weight_lb, current.weight_lb, "weight");
+  const weightDelta = computeWeightDelta(
+    previous.weight_lb, current.weight_lb,
+    previous.total_lean_mass, current.total_lean_mass,
+    previous.total_fat_mass, current.total_fat_mass,
+  );
+  const leanMassDelta = computeDelta(previous.total_lean_mass, current.total_lean_mass, "lean_mass");
+  const fatMassDelta = computeDelta(previous.total_fat_mass, current.total_fat_mass, "fat_mass");
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-8">
@@ -73,6 +80,20 @@ export function SecondScanView({ previous, current, goals }: SecondScanViewProps
           unit="lb"
           currentValue={current.weight_lb}
           delta={weightDelta}
+        />
+        <DeltaCard
+          label="Total Lean Mass"
+          unit="lb"
+          currentValue={current.total_lean_mass}
+          delta={leanMassDelta}
+          helperText="Higher is improvement."
+        />
+        <DeltaCard
+          label="Total Fat Mass"
+          unit="lb"
+          currentValue={current.total_fat_mass}
+          delta={fatMassDelta}
+          helperText="Lower is improvement."
         />
       </div>
 

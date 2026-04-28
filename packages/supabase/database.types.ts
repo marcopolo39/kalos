@@ -91,6 +91,8 @@ export type Database = {
           tbf_pct_pctile_am: number | null
           tbf_pct_pctile_yn: number | null
           total_bmd: number | null
+          total_fat_mass: number | null
+          total_lean_mass: number | null
           total_t_score: number | null
           total_z_score: number | null
           trunk_fat_mass: number | null
@@ -124,6 +126,8 @@ export type Database = {
           tbf_pct_pctile_am?: number | null
           tbf_pct_pctile_yn?: number | null
           total_bmd?: number | null
+          total_fat_mass?: number | null
+          total_lean_mass?: number | null
           total_t_score?: number | null
           total_z_score?: number | null
           trunk_fat_mass?: number | null
@@ -157,6 +161,8 @@ export type Database = {
           tbf_pct_pctile_am?: number | null
           tbf_pct_pctile_yn?: number | null
           total_bmd?: number | null
+          total_fat_mass?: number | null
+          total_lean_mass?: number | null
           total_t_score?: number | null
           total_z_score?: number | null
           trunk_fat_mass?: number | null

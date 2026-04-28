@@ -8,7 +8,7 @@ import { FirstScanView } from "./_components/first-scan-view";
 import { SecondScanView } from "./_components/second-scan/second-scan-view";
 
 const SCAN_FIELDS =
-  "id, scan_date, tbf_pct, tbf_pct_pctile_am, almi, almi_pctile_am, vat_area_cm2, weight_lb, total_bmd, total_t_score, l_arm_lean_mass, l_arm_fat_mass, r_arm_lean_mass, r_arm_fat_mass, trunk_lean_mass, trunk_fat_mass, l_leg_lean_mass, l_leg_fat_mass, r_leg_lean_mass, r_leg_fat_mass";
+  "id, scan_date, tbf_pct, tbf_pct_pctile_am, almi, almi_pctile_am, vat_area_cm2, weight_lb, total_bmd, total_t_score, total_lean_mass, total_fat_mass, l_arm_lean_mass, l_arm_fat_mass, r_arm_lean_mass, r_arm_fat_mass, trunk_lean_mass, trunk_fat_mass, l_leg_lean_mass, l_leg_fat_mass, r_leg_lean_mass, r_leg_fat_mass";
 
 async function getDashboardData(
   supabase: SupabaseClient<Database>,

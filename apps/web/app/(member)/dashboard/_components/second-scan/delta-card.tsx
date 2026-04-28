@@ -1,4 +1,4 @@
-import { STATUS_COLORS, STATUS_ARROWS } from "@/lib/scan-display/delta";
+import { STATUS_COLORS } from "@/lib/scan-display/delta";
 import type { Delta } from "@/lib/scan-display/delta";
 
 interface DeltaCardProps {
@@ -23,10 +23,10 @@ export function DeltaCard({
   formatValue = defaultFormat,
 }: DeltaCardProps) {
   const colorClass = delta ? STATUS_COLORS[delta.status] : "text-neutral-500";
-  const arrow = delta ? STATUS_ARROWS[delta.status] : null;
+  const arrow = delta ? (delta.value > 0 ? "↑" : delta.value < 0 ? "↓" : "→") : null;
 
   const absChange = delta ? Math.abs(delta.value) : null;
-  const sign = delta?.status !== "neutral" ? (delta!.value > 0 ? "+" : "−") : null;
+  const sign = delta && delta.status !== "neutral" ? (delta.value > 0 ? "+" : "−") : null;
 
   return (
     <div className="bg-white border border-neutral-200 rounded-lg shadow-sm p-6">

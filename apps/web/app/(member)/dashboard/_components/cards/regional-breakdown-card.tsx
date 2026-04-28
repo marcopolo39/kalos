@@ -1,4 +1,6 @@
 interface RegionalBreakdownCardProps {
+  total_lean_mass: number | null;
+  total_fat_mass: number | null;
   l_arm_lean_mass: number | null;
   l_arm_fat_mass: number | null;
   r_arm_lean_mass: number | null;
@@ -71,7 +73,22 @@ function PairedSection({ title, leftLean, leftFat, rightLean, rightFat, sectionN
 export function RegionalBreakdownCard(props: RegionalBreakdownCardProps) {
   return (
     <div className="bg-white border border-neutral-200 rounded-lg p-6">
-      <h2 className="text-lg font-bold text-black leading-tight mb-5">Regional Breakdown</h2>
+      <h2 className="text-lg font-bold text-black leading-tight mb-5">Body Composition</h2>
+
+      <div className="grid grid-cols-2 gap-4 mb-6">
+        <div className="bg-neutral-50 rounded-lg p-4">
+          <p className="text-xs font-semibold text-neutral-500 uppercase tracking-wide mb-1">Total Lean Mass</p>
+          <p className="text-2xl font-bold text-black">{fmt(props.total_lean_mass)}</p>
+          <p className="text-xs text-neutral-400 mt-0.5">lb</p>
+        </div>
+        <div className="bg-neutral-50 rounded-lg p-4">
+          <p className="text-xs font-semibold text-neutral-500 uppercase tracking-wide mb-1">Total Fat Mass</p>
+          <p className="text-2xl font-bold text-black">{fmt(props.total_fat_mass)}</p>
+          <p className="text-xs text-neutral-400 mt-0.5">lb</p>
+        </div>
+      </div>
+
+      <p className="text-xs font-semibold text-neutral-500 uppercase tracking-wide mb-3">Regional Breakdown</p>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <PairedSection

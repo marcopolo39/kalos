@@ -7,7 +7,7 @@ export interface Delta {
   status: DeltaStatus;
 }
 
-type DeltaKind = "tbf_pct" | "vat" | "almi" | "weight";
+type DeltaKind = "tbf_pct" | "vat" | "almi" | "weight" | "lean_mass" | "fat_mass";
 
 // true = higher is better, false = lower is better
 const IMPROVEMENT_DIRECTION: Record<DeltaKind, boolean> = {
@@ -15,6 +15,8 @@ const IMPROVEMENT_DIRECTION: Record<DeltaKind, boolean> = {
   vat: false,
   almi: true,
   weight: false,
+  lean_mass: true,
+  fat_mass: false,
 };
 
 export const STATUS_COLORS: Record<DeltaStatus, string> = {
@@ -23,11 +25,6 @@ export const STATUS_COLORS: Record<DeltaStatus, string> = {
   neutral: "text-neutral-500",
 };
 
-export const STATUS_ARROWS: Record<DeltaStatus, string> = {
-  improved: "↑",
-  regressed: "↓",
-  neutral: "→",
-};
 
 export function goalDirectionToOverride(direction: GoalDirection | undefined): boolean | null {
   if (direction === "decrease") return false;
@@ -46,4 +43,31 @@ export function computeDelta(
   const direction = IMPROVEMENT_DIRECTION[kind];
   const isImprovement = direction ? value > 0 : value < 0;
   return { value, status: isImprovement ? "improved" : "regressed" };
+}
+
+// Weight status is composition-aware: green if lean mass drove the change, red if fat did.
+export function computeWeightDelta(
+  prevWeight: number | null,
+  currWeight: number | null,
+  prevLean: number | null,
+  currLean: number | null,
+  prevFat: number | null,
+  currFat: number | null,
+): Delta | null {
+  if (prevWeight === null || currWeight === null) return null;
+  const value = currWeight - prevWeight;
+
+  if (prevLean !== null && currLean !== null && prevFat !== null && currFat !== null) {
+    const leanDelta = currLean - prevLean;
+    const fatDelta = currFat - prevFat;
+    let status: DeltaStatus;
+    if (leanDelta > fatDelta) status = "improved";
+    else if (fatDelta > leanDelta) status = "regressed";
+    else status = "neutral";
+    return { value, status };
+  }
+
+  // Fallback when composition data is unavailable
+  const status = value < 0 ? "improved" : value > 0 ? "regressed" : "neutral";
+  return { value, status };
 }
