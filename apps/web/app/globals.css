@@ -1,5 +1,13 @@
 @import "tailwindcss";
 
+:root {
+  --chart-improved: 22 163 74;
+  --chart-regressed: 220 38 38;
+  --chart-stable: 115 115 115;
+  --chart-primary: 59 130 246;
+  --chart-baseline: 10 10 10;
+}
+
 @theme {
   --color-kalos-blue: #3083ff;
   --color-kalos-blue-dark: #1a6fe8;

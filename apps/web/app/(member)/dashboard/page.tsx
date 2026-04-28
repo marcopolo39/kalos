@@ -2,39 +2,40 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@kalos/supabase";
-import type { MemberSex } from "@/lib/scan-display/types";
+import type { MemberSex, GoalRow } from "@/lib/scan-display/types";
 import { EmptyState } from "./_components/empty-state";
 import { FirstScanView } from "./_components/first-scan-view";
+import { SecondScanView } from "./_components/second-scan/second-scan-view";
+
+const SCAN_FIELDS =
+  "id, scan_date, tbf_pct, tbf_pct_pctile_am, almi, almi_pctile_am, vat_area_cm2, weight_lb, total_bmd, total_t_score, l_arm_lean_mass, l_arm_fat_mass, r_arm_lean_mass, r_arm_fat_mass, trunk_lean_mass, trunk_fat_mass, l_leg_lean_mass, l_leg_fat_mass, r_leg_lean_mass, r_leg_fat_mass";
 
 async function getDashboardData(
   supabase: SupabaseClient<Database>,
   userId: string,
 ) {
-  const [{ data: scans, count }, { data: member }, { count: goalCount }] =
+  const [{ data: scans, count }, { data: member }, { data: goals }] =
     await Promise.all([
       supabase
         .from("scans")
-        .select(
-          "id, scan_date, tbf_pct, tbf_pct_pctile_am, almi, almi_pctile_am, vat_area_cm2, total_bmd, total_t_score, l_arm_lean_mass, l_arm_fat_mass, r_arm_lean_mass, r_arm_fat_mass, trunk_lean_mass, trunk_fat_mass, l_leg_lean_mass, l_leg_fat_mass, r_leg_lean_mass, r_leg_fat_mass",
-          { count: "exact" },
-        )
+        .select(SCAN_FIELDS, { count: "exact" })
         .eq("member_id", userId)
         .order("scan_date", { ascending: false })
-        .limit(1),
+        .limit(2),
       supabase.from("members").select("name, sex").eq("id", userId).single(),
       supabase
         .from("member_goals")
-        .select("id", { count: "exact", head: true })
+        .select("metrics")
         .eq("member_id", userId),
     ]);
 
   const sex = member?.sex;
   return {
     scanCount: count ?? 0,
-    latestScan: scans?.[0] ?? null,
+    scans: scans ?? [],
     memberName: member?.name ?? "there",
     memberSex: (sex === "male" || sex === "female" ? sex : "male") as MemberSex,
-    hasGoal: (goalCount ?? 0) > 0,
+    goals: (goals ?? []) as unknown as GoalRow[],
   };
 }
 
@@ -51,15 +52,31 @@ export default async function DashboardPage() {
     redirect("/login");
   }
 
-  const { scanCount, latestScan, memberName, memberSex, hasGoal } =
+  const { scanCount, scans, memberName, memberSex, goals } =
     await getDashboardData(supabase, session.user.id);
 
   if (scanCount === 0) {
     return <EmptyState memberName={memberName} />;
   }
 
-  if (scanCount === 1 && latestScan) {
-    return <FirstScanView scan={latestScan} sex={memberSex} hasGoal={hasGoal} />;
+  if (scanCount === 1 && scans[0]) {
+    return (
+      <FirstScanView
+        scan={scans[0]}
+        sex={memberSex}
+        hasGoal={goals.length > 0}
+      />
+    );
+  }
+
+  if (scanCount === 2 && scans[0] && scans[1]) {
+    return (
+      <SecondScanView
+        current={scans[0]}
+        previous={scans[1]}
+        goals={goals}
+      />
+    );
   }
 
   return (
