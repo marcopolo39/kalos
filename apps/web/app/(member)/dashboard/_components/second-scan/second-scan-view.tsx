@@ -99,12 +99,7 @@ export function SecondScanView({ previous, current, goals }: SecondScanViewProps
 
       <GoalProgressSection goals={goals} previous={previous} current={current} />
 
-      <RegionalComparisonChart
-        previous={previous}
-        current={current}
-        previousDate={previous.scan_date}
-        currentDate={current.scan_date}
-      />
+      <RegionalComparisonChart previous={previous} current={current} />
     </div>
   );
 }

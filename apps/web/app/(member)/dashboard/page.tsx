@@ -1,11 +1,20 @@
 import { redirect } from "next/navigation";
+import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@kalos/supabase";
-import type { MemberSex, GoalRow } from "@/lib/scan-display/types";
+import type { MemberSex } from "@/lib/scan-display/types";
 import { EmptyState } from "./_components/empty-state";
 import { FirstScanView } from "./_components/first-scan-view";
 import { SecondScanView } from "./_components/second-scan/second-scan-view";
+
+const GoalMetricSchema = z.object({
+  metric: z.enum(["tbf_pct", "almi", "vat_area_cm2", "weight_lb"]),
+  direction: z.enum(["decrease", "increase", "maintain"]),
+});
+const GoalRowSchema = z.object({
+  metrics: z.array(GoalMetricSchema).default([]),
+});
 
 const SCAN_FIELDS =
   "id, scan_date, tbf_pct, tbf_pct_pctile_am, almi, almi_pctile_am, vat_area_cm2, weight_lb, total_bmd, total_t_score, total_lean_mass, total_fat_mass, l_arm_lean_mass, l_arm_fat_mass, r_arm_lean_mass, r_arm_fat_mass, trunk_lean_mass, trunk_fat_mass, l_leg_lean_mass, l_leg_fat_mass, r_leg_lean_mass, r_leg_fat_mass";
@@ -35,7 +44,10 @@ async function getDashboardData(
     scans: scans ?? [],
     memberName: member?.name ?? "there",
     memberSex: (sex === "male" || sex === "female" ? sex : "male") as MemberSex,
-    goals: (goals ?? []) as unknown as GoalRow[],
+    goals: (goals ?? []).flatMap((row) => {
+      const result = GoalRowSchema.safeParse(row);
+      return result.success ? [result.data] : [];
+    }),
   };
 }
 

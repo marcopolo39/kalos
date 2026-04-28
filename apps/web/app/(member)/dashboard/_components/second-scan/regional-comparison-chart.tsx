@@ -30,8 +30,6 @@ interface RegionalScan {
 interface RegionalComparisonChartProps {
   previous: RegionalScan;
   current: RegionalScan;
-  previousDate: string;
-  currentDate: string;
 }
 
 const CHART_CONFIG: ChartConfig = {
@@ -113,10 +111,7 @@ function RegionChart({ data, title }: MiniChartProps) {
   );
 }
 
-export function RegionalComparisonChart({
-  previous,
-  current,
-}: RegionalComparisonChartProps) {
+export function RegionalComparisonChart({ previous, current }: RegionalComparisonChartProps) {
   const leanData = buildLeanData(previous, current);
   const fatData = buildFatData(previous, current);
 

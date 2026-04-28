@@ -1,4 +1,4 @@
-import { computeDelta, STATUS_COLORS } from "@/lib/scan-display/delta";
+import { computeDelta, goalDirectionToOverride, STATUS_COLORS } from "@/lib/scan-display/delta";
 import type { GoalMetric, GoalRow } from "@/lib/scan-display/types";
 
 export type { GoalMetric, GoalRow };
@@ -37,7 +37,7 @@ const DELTA_KIND: Record<GoalMetric["metric"], "tbf_pct" | "vat" | "almi" | "wei
   weight_lb: "weight",
 };
 
-function prevValue(metric: GoalMetric["metric"], scan: ScanValues): number | null {
+function metricValue(metric: GoalMetric["metric"], scan: ScanValues): number | null {
   return scan[metric as keyof ScanValues];
 }
 
@@ -59,9 +59,10 @@ export function GoalProgressSection({
       <div className="divide-y divide-neutral-100">
         {unique.map((gm) => {
           const delta = computeDelta(
-            prevValue(gm.metric, previous),
-            prevValue(gm.metric, current),
+            metricValue(gm.metric, previous),
+            metricValue(gm.metric, current),
             DELTA_KIND[gm.metric],
+            goalDirectionToOverride(gm.direction),
           );
 
           const goalDir =

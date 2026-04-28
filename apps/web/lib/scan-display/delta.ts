@@ -25,7 +25,6 @@ export const STATUS_COLORS: Record<DeltaStatus, string> = {
   neutral: "text-neutral-500",
 };
 
-
 export function goalDirectionToOverride(direction: GoalDirection | undefined): boolean | null {
   if (direction === "decrease") return false;
   if (direction === "increase") return true;
@@ -36,11 +35,14 @@ export function computeDelta(
   prev: number | null,
   curr: number | null,
   kind: DeltaKind,
+  directionOverride?: boolean | null,
 ): Delta | null {
   if (prev === null || curr === null) return null;
 
   const value = curr - prev;
-  const direction = IMPROVEMENT_DIRECTION[kind];
+  if (value === 0) return { value, status: "neutral" };
+
+  const direction = directionOverride ?? IMPROVEMENT_DIRECTION[kind];
   const isImprovement = direction ? value > 0 : value < 0;
   return { value, status: isImprovement ? "improved" : "regressed" };
 }
