@@ -87,6 +87,7 @@ export default async function DashboardPage() {
         current={scans[0]}
         previous={scans[1]}
         goals={goals}
+        sex={memberSex}
       />
     );
   }

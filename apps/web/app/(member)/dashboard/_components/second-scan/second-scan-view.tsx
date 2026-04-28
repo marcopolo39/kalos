@@ -1,6 +1,8 @@
 import type { Database } from "@kalos/supabase";
-import type { GoalRow } from "@/lib/scan-display/types";
+import type { GoalRow, MemberSex } from "@/lib/scan-display/types";
 import { computeDelta, computeWeightDelta } from "@/lib/scan-display/delta";
+import { bodyFatRange, vatRiskBand, almiBand } from "@/lib/scan-display/healthy-ranges";
+import type { BandInfo } from "@/lib/scan-display/types";
 import { SecondScanHero } from "./second-scan-hero";
 import { DeltaCard } from "./delta-card";
 import { GoalProgressSection } from "./goal-progress-section";
@@ -10,7 +12,9 @@ type Scan = Pick<
   Database["public"]["Tables"]["scans"]["Row"],
   | "scan_date"
   | "tbf_pct"
+  | "tbf_pct_pctile_am"
   | "almi"
+  | "almi_pctile_am"
   | "vat_area_cm2"
   | "weight_lb"
   | "total_lean_mass"
@@ -31,9 +35,20 @@ interface SecondScanViewProps {
   previous: Scan;
   current: Scan;
   goals: GoalRow[];
+  sex: MemberSex;
 }
 
-export function SecondScanView({ previous, current, goals }: SecondScanViewProps) {
+export function SecondScanView({ previous, current, goals, sex }: SecondScanViewProps) {
+  const bfRange = bodyFatRange(sex);
+  const tbfBand: BandInfo | null = current.tbf_pct !== null
+    ? {
+        status: current.tbf_pct < bfRange.low ? "below" : current.tbf_pct > bfRange.high ? "above" : "healthy",
+        rangeText: `Healthy range: ${bfRange.low}–${bfRange.high}%`,
+      }
+    : null;
+  const vatBand = current.vat_area_cm2 !== null ? vatRiskBand(current.vat_area_cm2) : null;
+  const almiBandInfo = current.almi_pctile_am !== null ? almiBand(current.almi_pctile_am) : null;
+
   const tbfDelta = computeDelta(previous.tbf_pct, current.tbf_pct, "tbf_pct");
   const vatDelta = computeDelta(previous.vat_area_cm2, current.vat_area_cm2, "vat");
   const almiDelta = computeDelta(previous.almi, current.almi, "almi");
@@ -56,44 +71,52 @@ export function SecondScanView({ previous, current, goals }: SecondScanViewProps
         <DeltaCard
           label="Body Fat"
           unit="%"
+          previousValue={previous.tbf_pct}
           currentValue={current.tbf_pct}
           delta={tbfDelta}
-          helperText="Lower is improvement."
+          band={tbfBand}
+          previousPercentile={previous.tbf_pct_pctile_am}
+          currentPercentile={current.tbf_pct_pctile_am}
         />
         <DeltaCard
           label="Visceral Fat (VAT)"
           unit="cm²"
+          previousValue={previous.vat_area_cm2}
           currentValue={current.vat_area_cm2}
           delta={vatDelta}
-          helperText="Lower is improvement."
+          band={vatBand}
           formatValue={(v) => v.toFixed(0)}
         />
         <DeltaCard
           label="Lean Mass Index (ALMI)"
           unit="kg/m²"
+          previousValue={previous.almi}
           currentValue={current.almi}
           delta={almiDelta}
-          helperText="Higher is improvement."
+          band={almiBandInfo}
+          previousPercentile={previous.almi_pctile_am}
+          currentPercentile={current.almi_pctile_am}
         />
         <DeltaCard
           label="Weight"
           unit="lb"
+          previousValue={previous.weight_lb}
           currentValue={current.weight_lb}
           delta={weightDelta}
         />
         <DeltaCard
           label="Total Lean Mass"
           unit="lb"
+          previousValue={previous.total_lean_mass}
           currentValue={current.total_lean_mass}
           delta={leanMassDelta}
-          helperText="Higher is improvement."
         />
         <DeltaCard
           label="Total Fat Mass"
           unit="lb"
+          previousValue={previous.total_fat_mass}
           currentValue={current.total_fat_mass}
           delta={fatMassDelta}
-          helperText="Lower is improvement."
         />
       </div>
 
