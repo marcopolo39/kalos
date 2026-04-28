@@ -1,6 +1,6 @@
 import { bodyFatRange } from "@/lib/scan-display/healthy-ranges";
-import { EducationCard } from "../education-card";
-import type { BandInfo } from "../education-card";
+import { EducationCard } from "./education-card";
+import type { BandInfo } from "./education-card";
 
 interface BodyFatCardProps {
   tbf_pct: number | null;
