@@ -23,7 +23,7 @@ async function getDashboardData(
     scanCount: scans?.length ?? 0,
     latestScan: scans?.[0] ?? null,
     memberName: member?.name ?? "there",
-    memberSex: member?.sex ?? "male",
+    memberSex: member?.sex ?? "unknown",
   };
 }
 
