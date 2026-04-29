@@ -1,8 +1,15 @@
+import { Chat } from "@/components/Chat";
+
 export default function HomePage() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-4 p-8">
-      <h1 className="text-2xl font-semibold tracking-tight">MemberGPT</h1>
-      <p className="text-sm text-zinc-500">AI coach – coming soon.</p>
+    <main className="flex h-screen flex-col bg-white">
+      <header className="flex items-center border-b border-neutral-200 bg-black px-6 py-4">
+        <h1 className="text-lg font-semibold text-white">MemberGPT</h1>
+        <span className="ml-3 text-sm text-white/50">Coach assistant</span>
+      </header>
+      <div className="flex-1 overflow-hidden">
+        <Chat />
+      </div>
     </main>
   );
 }
