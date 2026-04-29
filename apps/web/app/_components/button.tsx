@@ -5,9 +5,9 @@ const MANROPE_STYLE = { fontFamily: "var(--font-manrope)" } as const;
 
 const variantClasses = {
   primary:
-    "bg-kalos-blue hover:bg-kalos-blue-dark text-white border border-transparent",
+    "bg-blue-500 hover:bg-blue-600 text-white border border-transparent",
   secondary:
-    "bg-white text-kalos-blue border border-kalos-blue hover:bg-blue-50",
+    "bg-white text-blue-500 border border-blue-500 hover:bg-blue-50",
 } as const;
 
 const baseClasses =

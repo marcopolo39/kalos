@@ -1,14 +1,11 @@
+import { formatDate } from "@/lib/scan-display/format";
+
 interface FirstScanHeroProps {
   scanDate: string;
 }
 
 export function FirstScanHero({ scanDate }: FirstScanHeroProps) {
-  const [year, month, day] = scanDate.split("-").map(Number);
-  const formatted = new Date(year, month - 1, day).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
+  const formatted = formatDate(scanDate);
 
   return (
     <div className="text-center py-10 px-4">

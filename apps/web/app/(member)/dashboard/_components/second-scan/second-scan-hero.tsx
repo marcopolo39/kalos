@@ -1,15 +1,4 @@
-function daysBetween(a: string, b: string): number {
-  const msPerDay = 1000 * 60 * 60 * 24;
-  return Math.round(Math.abs(Date.parse(b) - Date.parse(a)) / msPerDay);
-}
-
-function formatDate(dateStr: string): string {
-  return new Intl.DateTimeFormat("en-US", {
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  }).format(new Date(dateStr + "T12:00:00"));
-}
+import { formatDate, daysBetween } from "@/lib/scan-display/format";
 
 interface SecondScanHeroProps {
   previousDate: string;

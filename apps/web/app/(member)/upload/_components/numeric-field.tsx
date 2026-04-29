@@ -4,6 +4,7 @@ interface NumericFieldProps {
   onChange: (v: number | null) => void;
   step?: string;
   compact?: boolean;
+  initiallyNull?: boolean;
 }
 
 export function NumericField({
@@ -12,6 +13,7 @@ export function NumericField({
   onChange,
   step,
   compact = false,
+  initiallyNull = false,
 }: NumericFieldProps) {
   const inputClasses = compact
     ? "border border-neutral-200 rounded-lg px-2 py-1 text-sm w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -32,7 +34,7 @@ export function NumericField({
         }}
         className={inputClasses}
       />
-      {value === null && (
+      {initiallyNull && value === null && (
         <p className="text-xs text-neutral-500 mt-0.5">
           Not extracted — fill in if known
         </p>

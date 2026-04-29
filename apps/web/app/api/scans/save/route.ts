@@ -54,13 +54,22 @@ export async function POST(request: Request) {
     }
 
     const scanId = crypto.randomUUID();
+    const pdfBytes = new Uint8Array(await fileResult.blob.arrayBuffer());
+    const uploadResult = await uploadScanPdf(user.id, scanId, pdfBytes);
+    if (!uploadResult.ok) {
+      console.error('Storage upload error:', uploadResult.error);
+      return NextResponse.json(
+        { ok: false, errors: [{ field: 'server', message: 'Failed to store PDF. Please try again.' }] },
+        { status: 500 },
+      );
+    }
 
     const { error: insertError } = await supabase.from('scans').insert({
       id: scanId,
       member_id: user.id,
       scan_date: validated.data.scan_date,
       external_scan_id: validated.data.external_scan_id ?? `manual-${scanId}`,
-      source_pdf_path: `${user.id}/${scanId}.pdf`,
+      source_pdf_path: uploadResult.path,
       device_model: validated.data.device_model,
       device_serial: validated.data.device_serial,
       software_version: validated.data.software_version,
@@ -76,6 +85,8 @@ export async function POST(request: Request) {
       total_bmd: validated.data.total_bmd,
       total_t_score: validated.data.total_t_score,
       total_z_score: validated.data.total_z_score,
+      total_lean_mass: validated.data.total_lean_mass,
+      total_fat_mass: validated.data.total_fat_mass,
       l_arm_lean_mass: validated.data.l_arm_lean_mass,
       l_arm_fat_mass: validated.data.l_arm_fat_mass,
       r_arm_lean_mass: validated.data.r_arm_lean_mass,
@@ -100,12 +111,6 @@ export async function POST(request: Request) {
         { ok: false, errors: [{ field: 'server', message: 'Something went wrong' }] },
         { status: 500 },
       );
-    }
-
-    const pdfBytes = new Uint8Array(await fileResult.blob.arrayBuffer());
-    const uploadResult = await uploadScanPdf(user.id, scanId, pdfBytes);
-    if (!uploadResult.ok) {
-      console.error('Storage upload error (scan row saved):', uploadResult.error);
     }
 
     return NextResponse.json({ ok: true, scanId });

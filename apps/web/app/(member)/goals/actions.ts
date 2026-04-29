@@ -38,9 +38,30 @@ export async function saveGoal(
     return { error: "Select at least one metric." };
   }
 
+  // Fetch most recent scan values for baselines
+  const { data: latestScan } = await supabase
+    .from("scans")
+    .select("tbf_pct, almi, vat_area_cm2, weight_lb")
+    .eq("member_id", session.user.id)
+    .order("scan_date", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  const scanValues: Record<string, number | null> = {
+    tbf_pct: latestScan?.tbf_pct ?? null,
+    almi: latestScan?.almi ?? null,
+    vat_area_cm2: latestScan?.vat_area_cm2 ?? null,
+    weight_lb: latestScan?.weight_lb ?? null,
+  };
+
+  const metricsWithBaseline = parsed.data.metrics.map((m) => {
+    const baseline = scanValues[m.metric];
+    return baseline !== null ? { ...m, baseline_value: baseline } : m;
+  });
+
   const { error } = await supabase.from("member_goals").insert({
     member_id: session.user.id,
-    metrics: parsed.data.metrics,
+    metrics: metricsWithBaseline,
   });
 
   if (error) {
