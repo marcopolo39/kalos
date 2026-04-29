@@ -97,37 +97,6 @@ The script is idempotent — running it again deletes and recreates the seed row
 | Morgan | `morgan@demo.kalos.dev` | `password123` | 6 | Weight-stable recomp |
 | Casey | `casey@demo.kalos.dev` | `password123` | 4 | Bulking phase (lean up, fat stable, weight up) |
 
-## Database
-
-### Schema
-
-Three tables — all with RLS enabled, owner-only model:
-
-- **`members`** — linked 1:1 to `auth.users`. Auto-created by `handle_new_user()` trigger on signup.
-- **`scans`** — wide flat table (~28 columns). Unique on `(member_id, scan_date, external_scan_id)`.
-- **`member_goals`** — JSONB `metrics` array tracking direction and optional target values.
-
-### Migrations
-
-```bash
-# Install Supabase CLI
-brew install supabase/tap/supabase
-
-# Link to your project
-supabase link --project-ref <your-project-ref>
-
-# Push migrations
-supabase db push
-```
-
-### Generate TypeScript types
-
-After any schema change:
-
-```bash
-supabase gen types typescript --local > packages/supabase/database.types.ts
-```
-
 ## Deploy
 
 Production URL: **https://kalos-iota.vercel.app**
