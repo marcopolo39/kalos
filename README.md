@@ -71,6 +71,10 @@ pnpm dev:membergpt  # http://localhost:3001
 | `SUPABASE_SERVICE_ROLE_KEY` | Service-role key — bypasses RLS for cross-member reads |
 | `ANTHROPIC_API_KEY` | Anthropic API key for Claude |
 
+## Creating an account
+
+Sign up via the web app at `http://localhost:3000`. **Supabase sends a confirmation email before the account is active** — check your inbox and click the link before attempting to log in.
+
 ## Seed demo data
 
 Populate the database with 6 demo members covering all dashboard personas:
