@@ -1,5 +1,6 @@
 import type { Database } from "@kalos/supabase";
 import type { GoalRow } from "@/lib/scan-display/types";
+import { computeWeightDelta } from "@/lib/scan-display/delta";
 import { TrendChart } from "./trend-chart";
 import { TrajectoryCallout } from "./trajectory-callout";
 import { ScanHistoryTable } from "./scan-history-table";
@@ -13,6 +14,7 @@ type Scan = Pick<
   | "vat_area_cm2"
   | "weight_lb"
   | "total_lean_mass"
+  | "total_fat_mass"
   | "source_pdf_path"
 >;
 
@@ -96,11 +98,26 @@ export function MultiScanView({ scans, goals, memberName, signedUrls }: MultiSca
     label: formatMonthYear(s.scan_date),
     value: s.almi,
   }));
+  const weightData = chronological.map((s) => ({
+    label: formatMonthYear(s.scan_date),
+    value: s.weight_lb,
+  }));
 
   const tbfDelta = computeDeltaAnnotation(first.tbf_pct, latest.tbf_pct, true);
   const leanDelta = computeDeltaAnnotation(first.total_lean_mass, latest.total_lean_mass, false, 1);
   const vatDelta = computeDeltaAnnotation(first.vat_area_cm2, latest.vat_area_cm2, true, 0);
   const almiDelta = computeDeltaAnnotation(first.almi, latest.almi, false, 2);
+  const weightDeltaRaw = computeWeightDelta(
+    first.weight_lb, latest.weight_lb,
+    first.total_lean_mass, latest.total_lean_mass,
+    first.total_fat_mass, latest.total_fat_mass,
+  );
+  const weightDelta = weightDeltaRaw
+    ? {
+        label: (weightDeltaRaw.value >= 0 ? "+" : "") + weightDeltaRaw.value.toFixed(1),
+        improved: weightDeltaRaw.status === "improved" ? true : weightDeltaRaw.status === "regressed" ? false : null,
+      }
+    : null;
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-8">
@@ -152,6 +169,14 @@ export function MultiScanView({ scans, goals, memberName, signedUrls }: MultiSca
               </span>
             </div>
           )}
+          {latest.weight_lb !== null && (
+            <div className="text-sm">
+              <span className="text-neutral-400">Weight </span>
+              <span className="font-semibold text-neutral-900">
+                {latest.weight_lb.toFixed(1)} lb
+              </span>
+            </div>
+          )}
         </div>
       </div>
 
@@ -189,6 +214,14 @@ export function MultiScanView({ scans, goals, memberName, signedUrls }: MultiSca
           deltaLabel={almiDelta ? `${almiDelta.label} kg/m²` : undefined}
           deltaImproved={almiDelta?.improved ?? null}
           goalBaseline={almiGoal?.baseline_value}
+        />
+        <TrendChart
+          title="Body Weight"
+          unit="lb"
+          data={weightData}
+          deltaLabel={weightDelta ? `${weightDelta.label} lb` : undefined}
+          deltaImproved={weightDelta?.improved ?? null}
+          decimals={1}
         />
       </div>
 
