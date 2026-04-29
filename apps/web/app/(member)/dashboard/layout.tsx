@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
-import LogoutButton from "./_components/LogoutButton";
+import LogoutButton from "@/app/_components/logout-button";
 import { AddScanButton } from "./_components/AddScanButton";
 
 export const metadata: Metadata = {
@@ -37,7 +37,7 @@ export default async function DashboardLayout({
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-white">
+    <>
       <nav className="bg-black text-white h-14 px-6 flex items-center justify-between">
         <span className="font-semibold text-white">Kalos</span>
         <div className="flex items-center gap-4">
@@ -46,6 +46,6 @@ export default async function DashboardLayout({
         </div>
       </nav>
       <main className="flex-1 overflow-auto">{children}</main>
-    </div>
+    </>
   );
 }

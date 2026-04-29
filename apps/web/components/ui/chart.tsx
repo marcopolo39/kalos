@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Legend, ResponsiveContainer, Tooltip } from "recharts";
+import { ResponsiveContainer, Tooltip } from "recharts";
 
 export interface ChartConfig {
   [key: string]: {
@@ -98,37 +98,6 @@ export function ChartTooltipContent({
           );
         })}
       </div>
-    </div>
-  );
-}
-
-export function ChartLegend(props: React.ComponentProps<typeof Legend>) {
-  return <Legend {...props} />;
-}
-
-interface LegendContentProps {
-  payload?: Array<{ value: string; color?: string; dataKey?: string }>;
-}
-
-export function ChartLegendContent({ payload }: LegendContentProps) {
-  const { config } = useChartContext();
-  if (!payload?.length) return null;
-
-  return (
-    <div className="flex items-center justify-center gap-4 text-sm mt-2">
-      {payload.map((entry) => {
-        const key = entry.dataKey ?? entry.value;
-        const cfg = config[key];
-        return (
-          <div key={key} className="flex items-center gap-1.5">
-            <span
-              className="inline-block w-2.5 h-2.5 rounded-sm"
-              style={{ backgroundColor: entry.color ?? cfg?.color }}
-            />
-            <span className="text-neutral-600">{cfg?.label ?? entry.value}</span>
-          </div>
-        );
-      })}
     </div>
   );
 }

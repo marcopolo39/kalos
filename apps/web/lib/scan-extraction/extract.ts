@@ -22,6 +22,8 @@ Fields:
 - total_bmd: Total body bone mineral density (g/cm²)
 - total_t_score: Total body T-score
 - total_z_score: Total body Z-score
+- total_lean_mass: Total body lean mass in pounds (the sum of all regional lean + BMC values from the Body Composition Results table; sometimes labeled "Total Lean + BMC" or "Lean Mass (lb)")
+- total_fat_mass: Total body fat mass in pounds (the sum of all regional fat mass values; sometimes labeled "Total Fat Mass (lb)")
 - l_arm_lean_mass, r_arm_lean_mass, trunk_lean_mass, l_leg_lean_mass, r_leg_lean_mass: The 'Lean + BMC' mass in pounds for each region. IMPORTANT: Hologic reports 'Lean + BMC Mass (lb)' which includes bone mineral content (~5% higher than pure lean mass). Extract the 'Lean + BMC Mass (lb)' column specifically.
 - l_arm_fat_mass, r_arm_fat_mass, trunk_fat_mass, l_leg_fat_mass, r_leg_fat_mass: Fat mass in pounds for each region
 
@@ -37,6 +39,7 @@ This is a Hologic DEXA report. Key locations:
 - almi: 'ALMI' or 'App. Lean/Height²'
 - almi_pctile_yn / _am: Percentile columns next to ALMI
 - total_bmd, total_t_score, total_z_score: 'Total' row in Bone Density section
+- total_lean_mass, total_fat_mass: Total row of the Body Composition Results table — "Lean + BMC Mass (lb)" and "Fat Mass (lb)" columns
 - Regional lean/fat: 'Body Composition Results' table — rows L Arm, R Arm, Trunk, L Leg, R Leg; columns 'Lean + BMC Mass (lb)' and 'Fat Mass (lb)'
 
 Return null for any field that is not present in this PDF, cannot be read clearly, has ambiguous units, or would require inference. Never return 0 for a missing value.`;

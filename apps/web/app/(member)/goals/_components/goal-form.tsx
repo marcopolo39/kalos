@@ -109,7 +109,7 @@ export function GoalForm() {
               onClick={() => toggleMetric(key, defaultDirection)}
               className={`bg-white border border-neutral-200 rounded-lg p-5 cursor-pointer transition-all select-none ${
                 isSelected
-                  ? "ring-2 ring-[#3083ff]"
+                  ? "ring-2 ring-blue-500"
                   : "hover:border-neutral-300"
               }`}
             >
@@ -125,7 +125,7 @@ export function GoalForm() {
                 <div
                   className={`w-5 h-5 rounded-full border-2 flex-shrink-0 mt-0.5 transition-colors ${
                     isSelected
-                      ? "bg-[#3083ff] border-[#3083ff]"
+                      ? "bg-blue-500 border-blue-500"
                       : "border-neutral-300"
                   }`}
                 />
@@ -143,7 +143,7 @@ export function GoalForm() {
                       onClick={() => setDirection(key, value)}
                       className={`flex-1 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
                         direction === value
-                          ? "bg-kalos-blue text-white"
+                          ? "bg-blue-500 text-white"
                           : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200"
                       }`}
                     >

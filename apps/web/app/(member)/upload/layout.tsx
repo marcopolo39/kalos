@@ -1,4 +1,4 @@
-import LogoutButton from "../dashboard/_components/LogoutButton";
+import LogoutButton from "@/app/_components/logout-button";
 
 export default function UploadLayout({
   children,
@@ -6,7 +6,7 @@ export default function UploadLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="h-screen flex flex-col bg-white">
+    <div className="h-screen flex flex-col">
       <nav className="bg-black text-white h-14 px-6 flex items-center justify-between shrink-0">
         <span className="font-semibold text-white">Kalos</span>
         <LogoutButton />

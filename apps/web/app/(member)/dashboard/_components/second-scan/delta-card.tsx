@@ -1,6 +1,8 @@
 import { STATUS_COLORS } from "@/lib/scan-display/delta";
 import type { Delta } from "@/lib/scan-display/delta";
 import type { BandInfo } from "@/lib/scan-display/types";
+import { ordinal } from "@/lib/scan-display/format";
+import { BAND_STYLES } from "@/lib/scan-display/band-styles";
 
 interface DeltaCardProps {
   label: string;
@@ -14,22 +16,8 @@ interface DeltaCardProps {
   currentPercentile?: number | null;
 }
 
-const BAND_STYLES = {
-  healthy: { label: "Within healthy range", className: "text-green-600" },
-  above: { label: "Above healthy range", className: "text-red-600" },
-  below: { label: "Below healthy range", className: "text-neutral-500" },
-  warning: { label: "Needs attention", className: "text-amber-600" },
-} as const;
-
 function defaultFormat(v: number): string {
   return v.toFixed(1);
-}
-
-function ordinal(n: number): string {
-  const abs = Math.round(Math.abs(n));
-  const s = ["th", "st", "nd", "rd"];
-  const v = abs % 100;
-  return abs + (s[(v - 20) % 10] ?? s[v] ?? s[0]);
 }
 
 export function DeltaCard({

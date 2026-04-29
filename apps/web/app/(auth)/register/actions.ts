@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const DOB_RE = /^\d{4}-\d{2}-\d{2}$/;
-const VALID_SEX = ["Male", "Female"] as const;
+const VALID_SEX = ["male", "female"] as const;
 
 type RegisterState = { error: string } | { success: true } | undefined;
 

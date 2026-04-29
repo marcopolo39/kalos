@@ -8,25 +8,4 @@
   --chart-baseline: 10 10 10;
 }
 
-@theme {
-  --color-kalos-blue: #3083ff;
-  --color-kalos-blue-dark: #1a6fe8;
-}
 
-/* @theme custom color tokens don't generate utility classes in Next.js + Turbopack.
-   Define them explicitly so hover:, focus:, and other variants work. */
-@utility bg-kalos-blue {
-  background-color: #3083ff;
-}
-
-@utility bg-kalos-blue-dark {
-  background-color: #1a6fe8;
-}
-
-@utility text-kalos-blue {
-  color: #3083ff;
-}
-
-@utility border-kalos-blue {
-  border-color: #3083ff;
-}

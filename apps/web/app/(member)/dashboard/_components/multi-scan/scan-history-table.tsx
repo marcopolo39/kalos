@@ -1,3 +1,5 @@
+import { formatDateShort } from "@/lib/scan-display/format";
+
 interface ScanRow {
   id: string;
   scan_date: string;
@@ -10,14 +12,6 @@ interface ScanRow {
 interface ScanHistoryTableProps {
   scans: ScanRow[];
   signedUrls: Record<string, string>;
-}
-
-function formatDate(dateStr: string): string {
-  return new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  }).format(new Date(dateStr + "T12:00:00"));
 }
 
 function fmt(v: number | null, dec = 1): string {
@@ -48,7 +42,7 @@ export function ScanHistoryTable({ scans, signedUrls }: ScanHistoryTableProps) {
               return (
                 <tr key={scan.id} className="hover:bg-neutral-50 transition-colors">
                   <td className="px-6 py-3 text-neutral-900 font-medium">
-                    {formatDate(scan.scan_date)}
+                    {formatDateShort(scan.scan_date)}
                   </td>
                   <td className="px-4 py-3 text-right tabular-nums text-neutral-700">
                     {fmt(scan.weight_lb, 0)}

@@ -1,6 +1,7 @@
 import type { Database } from "@kalos/supabase";
 import type { GoalRow } from "@/lib/scan-display/types";
 import { computeWeightDelta } from "@/lib/scan-display/delta";
+import { formatDate, formatMonthYear, monthsBetween } from "@/lib/scan-display/format";
 import { TrendChart } from "./trend-chart";
 import { TrajectoryCallout } from "./trajectory-callout";
 import { ScanHistoryTable } from "./scan-history-table";
@@ -23,27 +24,6 @@ interface MultiScanViewProps {
   goals: GoalRow[];
   memberName: string;
   signedUrls: Record<string, string>;
-}
-
-function formatMonthYear(dateStr: string): string {
-  return new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    year: "numeric",
-  }).format(new Date(dateStr + "T12:00:00"));
-}
-
-function formatDate(dateStr: string): string {
-  return new Intl.DateTimeFormat("en-US", {
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  }).format(new Date(dateStr + "T12:00:00"));
-}
-
-function monthsBetween(a: string, b: string): number {
-  const msPerDay = 1000 * 60 * 60 * 24;
-  const days = Math.abs(Date.parse(b) - Date.parse(a)) / msPerDay;
-  return Math.round(days / 30.44);
 }
 
 interface DeltaAnnotation {
