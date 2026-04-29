@@ -61,6 +61,7 @@ pnpm dev:membergpt  # http://localhost:3001
 |----------|-------------|
 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anon public key |
+| `NEXT_PUBLIC_SITE_URL` | Production URL used for auth email redirects (e.g. `https://kalos-iota.vercel.app`) |
 | `GOOGLE_GENERATIVE_AI_API_KEY` | Google AI key for scan analysis |
 
 ### `apps/membergpt`
